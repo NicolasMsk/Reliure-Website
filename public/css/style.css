@@ -200,6 +200,9 @@ a:hover { color: var(--accent-2); }
 }
 .nav a:hover { color: var(--accent); }
 .nav a:hover::after { right: 0; }
+/* page courante : underline doré persistant (même mécanisme que le survol) */
+.nav a[aria-current="page"] { color: var(--accent); }
+.nav a[aria-current="page"]::after { right: 0; }
 
 .lang-toggle { display: flex; gap: 0.15rem; align-items: center; margin-left: 0.4rem; }
 .lang-toggle button {

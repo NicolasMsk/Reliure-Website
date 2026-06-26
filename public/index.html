@@ -1,3 +1,58 @@
 <!DOCTYPE html>
-<html lang="fr"><head><meta charset="UTF-8"><title>Reliure</title></head>
-<body><h1>Reliure</h1></body></html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reliure — L'art de la reliure façonné à la main</title>
+  <meta name="description" content="Atelier de reliure d'art : pièces uniques et créations sur-mesure, dans la tradition des relieurs." />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="site-header" id="site-header"></header>
+
+  <main>
+    <section class="hero" style="--hero-image: url('/images/hero.jpg');">
+      <div class="container">
+        <h1 data-i18n="home.hero.title"></h1>
+        <p data-i18n="home.hero.subtitle"></p>
+        <a class="btn" href="/boutique" data-i18n="home.hero.cta"></a>
+      </div>
+    </section>
+
+    <section class="section center">
+      <div class="container">
+        <h2 data-i18n="home.intro.title"></h2>
+        <div class="rule"></div>
+        <p style="max-width: 60ch; margin-inline: auto;" data-i18n="home.intro.text"></p>
+      </div>
+    </section>
+
+    <section class="section section--alt">
+      <div class="container">
+        <h2 class="center" data-i18n="home.featured.title"></h2>
+        <div class="rule"></div>
+        <!-- Placeholder : la grille sera alimentée par la base au Plan 2 -->
+        <div class="grid" id="featured-grid">
+          <article class="card">
+            <img src="/images/placeholder-1.jpg" alt="" />
+            <div class="card-body"><h3>Carnet relié cuir</h3><p>Pièce unique</p></div>
+          </article>
+          <article class="card">
+            <img src="/images/placeholder-2.jpg" alt="" />
+            <div class="card-body"><h3>Registre ancien restauré</h3><p>Pièce unique</p></div>
+          </article>
+          <article class="card">
+            <img src="/images/placeholder-3.jpg" alt="" />
+            <div class="card-body"><h3>Coffret dorure à chaud</h3><p>Pièce unique</p></div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script src="/js/i18n.js"></script>
+  <script src="/js/layout.js"></script>
+</body>
+</html>

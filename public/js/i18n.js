@@ -13,8 +13,14 @@
   }
 
   async function loadDict(lang) {
-    const res = await fetch(`/i18n/${lang}.json`);
-    return res.json();
+    try {
+      const res = await fetch(`/i18n/${lang}.json`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    } catch (err) {
+      console.warn(`[i18n] Échec du chargement du dictionnaire ${lang}:`, err);
+      return {};
+    }
   }
 
   function apply(dict) {

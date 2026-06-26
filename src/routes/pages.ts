@@ -1,8 +1,17 @@
 import { Express } from 'express';
 import path from 'path';
 
+/** Associe une URL propre à un fichier HTML de public/. */
+const PAGE_ALIASES: Record<string, string> = {
+  '/': 'index.html',
+  '/a-propos': 'a-propos.html',
+  '/contact': 'contact.html',
+};
+
 export function registerPageRoutes(app: Express, publicDir: string): void {
-  app.get('/', (_req, res) => {
-    res.sendFile(path.join(publicDir, 'index.html'));
-  });
+  for (const [route, file] of Object.entries(PAGE_ALIASES)) {
+    app.get(route, (_req, res) => {
+      res.sendFile(path.join(publicDir, file));
+    });
+  }
 }

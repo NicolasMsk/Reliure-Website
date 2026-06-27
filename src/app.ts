@@ -9,6 +9,7 @@ import { registerPageRoutes } from './routes/pages';
 import { registerContactRoutes } from './routes/contact';
 import { registerProductRoutes } from './routes/products';
 import { registerAdminRoutes } from './routes/admin';
+import { registerCheckoutRoutes } from './routes/checkout';
 
 const PUBLIC_DIR = path.join(__dirname, '..', 'public');
 
@@ -60,6 +61,7 @@ export function createApp(): Express {
   registerContactRoutes(app);
   registerProductRoutes(app);
   registerAdminRoutes(app);
+  registerCheckoutRoutes(app);
 
   // Assets avec cache — UNIQUEMENT en production. En dev, pas de cache long
   // (sinon le navigateur sert d'anciens JS/CSS après une modification).

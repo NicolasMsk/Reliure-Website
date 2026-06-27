@@ -12,6 +12,7 @@ import { registerAdminRoutes } from './routes/admin';
 import { registerCheckoutRoutes } from './routes/checkout';
 import { registerStripeWebhook } from './routes/stripe-webhook';
 import { registerConfigRoute } from './routes/config';
+import { registerAccountRoutes } from './routes/account';
 
 const PUBLIC_DIR = path.join(__dirname, '..', 'public');
 
@@ -68,6 +69,7 @@ export function createApp(): Express {
   registerAdminRoutes(app);
   registerCheckoutRoutes(app);
   registerConfigRoute(app);
+  registerAccountRoutes(app);
 
   // Assets avec cache — UNIQUEMENT en production. En dev, pas de cache long
   // (sinon le navigateur sert d'anciens JS/CSS après une modification).

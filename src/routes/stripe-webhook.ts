@@ -30,6 +30,19 @@ export function registerStripeWebhook(app: Express): void {
         res.json({ received: true });
         return;
       }
+      // Paiement d'un devis sur-mesure (Payment Link) ?
+      const customRequestId = session.metadata?.custom_request_id;
+      if (customRequestId) {
+        try {
+          const { setCustomRequestStatus } = await import('../lib/custom-requests');
+          await setCustomRequestStatus(getSupabase(), customRequestId, 'payée');
+          console.log(`✅ Devis sur-mesure payé — demande ${customRequestId}`);
+        } catch (e: any) {
+          console.error('❌ maj demande sur-mesure:', e.message);
+        }
+        res.json({ received: true });
+        return;
+      }
       try {
         const sb = getSupabase();
         const created = await createOrderFromSession(sb, session);

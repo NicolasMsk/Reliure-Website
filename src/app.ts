@@ -61,11 +61,15 @@ export function createApp(): Express {
   registerProductRoutes(app);
   registerAdminRoutes(app);
 
-  // Assets avec cache
-  app.use('/css', express.static(path.join(PUBLIC_DIR, 'css'), { maxAge: '7d' }));
-  app.use('/js', express.static(path.join(PUBLIC_DIR, 'js'), { maxAge: '7d' }));
-  app.use('/i18n', express.static(path.join(PUBLIC_DIR, 'i18n'), { maxAge: '1d' }));
-  app.use('/images', express.static(path.join(PUBLIC_DIR, 'images'), { maxAge: '30d' }));
+  // Assets avec cache — UNIQUEMENT en production. En dev, pas de cache long
+  // (sinon le navigateur sert d'anciens JS/CSS après une modification).
+  const cssJsMaxAge = IS_PRODUCTION ? '7d' : 0;
+  const i18nMaxAge = IS_PRODUCTION ? '1d' : 0;
+  const imgMaxAge = IS_PRODUCTION ? '30d' : 0;
+  app.use('/css', express.static(path.join(PUBLIC_DIR, 'css'), { maxAge: cssJsMaxAge }));
+  app.use('/js', express.static(path.join(PUBLIC_DIR, 'js'), { maxAge: cssJsMaxAge }));
+  app.use('/i18n', express.static(path.join(PUBLIC_DIR, 'i18n'), { maxAge: i18nMaxAge }));
+  app.use('/images', express.static(path.join(PUBLIC_DIR, 'images'), { maxAge: imgMaxAge }));
 
   // HTML restant (sans cache)
   app.use(express.static(PUBLIC_DIR, { redirect: false }));

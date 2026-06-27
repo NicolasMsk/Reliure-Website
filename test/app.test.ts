@@ -25,3 +25,11 @@ test("GET / sert la page d'accueil (HTML)", async () => {
   assert.equal(res.status, 200);
   assert.match(res.headers.get('content-type') ?? '', /text\/html/);
 });
+
+test('en dev, les assets JS ne sont pas mis en cache long', async () => {
+  const res = await fetch(`${base()}/js/i18n.js`);
+  assert.equal(res.status, 200);
+  const cc = res.headers.get('cache-control') ?? '';
+  // En dev (NODE_ENV non "production"), pas de max-age d'une semaine.
+  assert.doesNotMatch(cc, /max-age=604800/);
+});

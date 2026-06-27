@@ -47,3 +47,18 @@ export async function createCheckoutSession(product: ProductRow, lang: 'fr' | 'e
     cancel_url: `${APP_URL}/produit/${product.slug}`,
   });
 }
+
+/** Crée un Stripe Payment Link pour un montant convenu (devis sur-mesure). */
+export async function createPaymentLink(amountEur: number, label: string, customRequestId: string): Promise<{ url: string }> {
+  const stripe = getStripe();
+  const price = await stripe.prices.create({
+    currency: CURRENCY,
+    unit_amount: Math.round(amountEur * 100),
+    product_data: { name: label },
+  });
+  const link = await stripe.paymentLinks.create({
+    line_items: [{ price: price.id, quantity: 1 }],
+    metadata: { custom_request_id: customRequestId },
+  });
+  return { url: link.url };
+}

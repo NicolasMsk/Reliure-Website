@@ -40,6 +40,19 @@ Exécuter `schema.sql` dans le SQL Editor de Supabase.
 3. Renseigner les variables d'environnement (Railway fournit `PORT`).
 4. Configurer `APP_URL` sur l'URL publique Railway.
 
+## Supabase Storage (images produits)
+
+Créer un bucket **public** nommé `product-images` :
+- Dashboard Supabase → Storage → New bucket → nom `product-images`, cocher **Public bucket** → Create.
+
+Ou via SQL (SQL Editor) :
+```sql
+insert into storage.buckets (id, name, public)
+values ('product-images', 'product-images', true)
+on conflict (id) do nothing;
+```
+Les uploads passent par la clé service (serveur) ; la lecture est publique.
+
 ## Feuille de route (plans)
 
 - **Plan 1** — Fondations & design (ce plan) ✅

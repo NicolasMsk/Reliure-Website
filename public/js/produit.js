@@ -74,10 +74,9 @@ function wireBuy(p) {
     note.hidden = true;
     const lang = window.I18N ? window.I18N.current : 'fr';
     try {
-      const res = await fetch('/api/checkout', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slug: p.slug, lang }),
-      });
+      const headers = { 'Content-Type': 'application/json' };
+      try { if (window.AUTH) { const t = await window.AUTH.getToken(); if (t) headers.Authorization = `Bearer ${t}`; } } catch { /* invité */ }
+      const res = await fetch('/api/checkout', { method: 'POST', headers, body: JSON.stringify({ slug: p.slug, lang }) });
       if (res.ok) {
         const d = await res.json();
         if (d.url) { window.location.href = d.url; return; }

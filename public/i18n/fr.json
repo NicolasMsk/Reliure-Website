@@ -76,5 +76,12 @@
   "contact.success": "Message envoyé, merci ! Je vous réponds au plus vite.",
   "contact.error": "Une erreur est survenue. Réessayez ou écrivez-moi directement.",
   "footer.tagline": "Reliure d'art — pièces uniques & sur-mesure",
-  "footer.rights": "Tous droits réservés"
+  "footer.rights": "Tous droits réservés",
+  "merci.title": "Merci pour votre commande",
+  "merci.confirmed": "Votre paiement a bien été reçu. Vous allez recevoir un email de confirmation.",
+  "merci.pending": "Confirmation en cours… vous recevrez un email sous peu.",
+  "merci.back": "Retour à la boutique",
+  "product.buy": "Acheter",
+  "product.unavailable": "Le paiement en ligne sera bientôt disponible. Contactez-moi pour réserver cette pièce.",
+  "product.sold": "Pièce vendue"
 }

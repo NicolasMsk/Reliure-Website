@@ -76,5 +76,12 @@
   "contact.success": "Message sent, thank you! I'll get back to you shortly.",
   "contact.error": "Something went wrong. Please try again or email me directly.",
   "footer.tagline": "Fine bookbinding — unique & bespoke pieces",
-  "footer.rights": "All rights reserved"
+  "footer.rights": "All rights reserved",
+  "merci.title": "Thank you for your order",
+  "merci.confirmed": "Your payment was received. You will get a confirmation email shortly.",
+  "merci.pending": "Confirming… you will receive an email shortly.",
+  "merci.back": "Back to the shop",
+  "product.buy": "Buy",
+  "product.unavailable": "Online payment will be available soon. Contact me to reserve this piece.",
+  "product.sold": "Sold"
 }

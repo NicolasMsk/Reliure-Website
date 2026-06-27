@@ -2,8 +2,11 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createOrderFromSession } from '../src/lib/orders';
 
-/** Faux client Supabase enregistrant les inserts et simulant l'unicité de stripe_session_id. */
-function fakeSb(existingSessions: string[] = []) {
+/**
+ * Faux client Supabase enregistrant les inserts et simulant l'unicité de stripe_session_id.
+ * `insertError` : si fourni, l'insert dans `orders` renvoie cette erreur (ex. { code: '23505' }).
+ */
+function fakeSb(existingSessions: string[] = [], insertError: any = null) {
   const inserted: any[] = [];
   const productUpdates: any[] = [];
   const sb: any = {
@@ -18,8 +21,11 @@ function fakeSb(existingSessions: string[] = []) {
           }
           return Promise.resolve({ data: null, error: null });
         },
-        insert(row: any) { inserted.push({ table: this._table, row }); return { select() { return { single() { return Promise.resolve({ data: { id: 'new', ...row }, error: null }); } }; } }; },
-        update(patch: any) { productUpdates.push({ table: this._table, patch, eqCol: undefined }); const self = this; return { eq(_c: string, _v: any) { productUpdates[productUpdates.length - 1].id = _v; return Promise.resolve({ error: null }); } }; },
+        insert(row: any) {
+          inserted.push({ table: this._table, row });
+          return Promise.resolve({ data: null, error: this._table === 'orders' ? insertError : null });
+        },
+        update(patch: any) { productUpdates.push({ table: this._table, patch, eqCol: undefined }); return { eq(_c: string, _v: any) { productUpdates[productUpdates.length - 1].id = _v; return Promise.resolve({ error: null }); } }; },
       };
     },
   };
@@ -56,4 +62,14 @@ test('createOrderFromSession est idempotent (session déjà traitée)', async ()
   const created = await createOrderFromSession(sb, SESSION);
   assert.equal(created, false);
   assert.equal(inserted.length, 0);
+});
+
+test('createOrderFromSession: violation unicité (23505) lors de l\'insert → false, produit non marqué', async () => {
+  // SELECT initial ne trouve rien (course concurrente), mais l'insert échoue sur la contrainte UNIQUE.
+  const { sb, inserted, productUpdates } = fakeSb([], { code: '23505', message: 'duplicate key' });
+  const created = await createOrderFromSession(sb, SESSION);
+  assert.equal(created, false);
+  // L'insert a bien été tenté mais le produit ne doit PAS être marqué vendu.
+  assert.equal(inserted.filter((i) => i.table === 'orders').length, 1);
+  assert.equal(productUpdates.filter((u) => u.table === 'products').length, 0);
 });

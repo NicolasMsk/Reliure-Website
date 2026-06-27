@@ -25,6 +25,11 @@ export function registerStripeWebhook(app: Express): void {
 
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object as Stripe.Checkout.Session;
+      if (session.payment_status !== 'paid') {
+        // Session non payée (ex. paiement asynchrone en attente) — 200 pour éviter les retries.
+        res.json({ received: true });
+        return;
+      }
       try {
         const sb = getSupabase();
         const created = await createOrderFromSession(sb, session);

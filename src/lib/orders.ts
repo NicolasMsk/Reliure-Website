@@ -28,7 +28,7 @@ export async function createOrderFromSession(sb: SupabaseClient, session: Stripe
   const productId = session.metadata?.product_id ?? null;
   const shipping = (session as any).shipping_details?.address ?? (session as any).customer_details?.address ?? null;
 
-  await sb.from('orders').insert({
+  const { error: insErr } = await sb.from('orders').insert({
     stripe_session_id: session.id,
     product_id: productId,
     customer_email: session.customer_details?.email ?? null,
@@ -36,10 +36,15 @@ export async function createOrderFromSession(sb: SupabaseClient, session: Stripe
     shipping_address: shipping,
     status: 'payée',
     lang,
-  }).select().single();
+  });
+  if (insErr) {
+    if ((insErr as any).code === '23505') return false; // déjà traité (course) — idempotent
+    throw new Error(insErr.message);
+  }
 
   if (productId) {
-    await sb.from('products').update({ status: 'vendu' }).eq('id', productId);
+    const { error: updErr } = await sb.from('products').update({ status: 'vendu' }).eq('id', productId);
+    if (updErr) console.error('⚠️  produit non marqué vendu', productId, updErr.message);
   }
   return true;
 }

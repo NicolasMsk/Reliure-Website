@@ -42,8 +42,8 @@ async function loadOrders() {
   if (!tb) return;
   const orders = await fetch('/api/admin/orders').then((r) => r.ok ? r.json() : []).catch(() => []);
   tb.innerHTML = orders.length ? orders.map(orderRow).join('') : `<tr><td colspan="6">Aucune commande pour l'instant.</td></tr>`;
-  tb.querySelectorAll('[data-ship]').forEach((b) => b.addEventListener('click', () => setOrder(b.getAttribute('data-ship'), 'expédiée')));
-  tb.querySelectorAll('[data-deliver]').forEach((b) => b.addEventListener('click', () => setOrder(b.getAttribute('data-deliver'), 'livrée')));
+  tb.querySelectorAll('[data-ship]').forEach((b) => b.addEventListener('click', () => setOrder(b.getAttribute('data-ship'), 'expédiée', b)));
+  tb.querySelectorAll('[data-deliver]').forEach((b) => b.addEventListener('click', () => setOrder(b.getAttribute('data-deliver'), 'livrée', b)));
 }
 function orderRow(o) {
   const a = o.shipping_address || {};
@@ -60,9 +60,18 @@ function orderRow(o) {
       <button class="btn btn--sm" data-deliver="${escAttr(o.id)}">Livrée</button>
     </td></tr>`;
 }
-async function setOrder(id, status) {
-  await fetch(`/api/admin/orders/${id}/status`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status }) });
-  loadOrders();
+async function setOrder(id, status, btn) {
+  if (btn) btn.disabled = true;
+  try {
+    const res = await fetch(`/api/admin/orders/${id}/status`, {
+      method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status }),
+    });
+    if (!res.ok) { alert('Échec de la mise à jour de la commande.'); if (btn) btn.disabled = false; return; }
+    loadOrders();
+  } catch {
+    alert('Échec de la mise à jour de la commande.');
+    if (btn) btn.disabled = false;
+  }
 }
 function rowHTML(p) {
   const cat = window.categoryLabel ? window.categoryLabel(p.category, 'fr') : (p.category || '');

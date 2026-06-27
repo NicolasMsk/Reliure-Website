@@ -1,4 +1,4 @@
-import { Express, Request, Response } from 'express';
+import { Express, Request, Response, NextFunction } from 'express';
 import multer from 'multer';
 import rateLimit from 'express-rate-limit';
 import { getResend } from '../lib/clients';
@@ -7,7 +7,29 @@ import { isAllowedImage, uploadReference } from '../lib/storage';
 import { createCustomRequest } from '../lib/custom-requests';
 import { EMAIL_FROM, ORDER_NOTIFY_EMAIL } from '../config';
 
-const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024, files: 3 } });
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024, files: 3 },
+  fileFilter: (_req, file, cb) => {
+    if (isAllowedImage(file.mimetype)) cb(null, true);
+    else cb(new Error('BAD_MIME'));
+  },
+});
+
+/** Enveloppe multer : transforme toute MulterError (taille, nombre, MIME) en 400 JSON propre. */
+function uploadImages(req: Request, res: Response, next: NextFunction): void {
+  upload.array('images', 3)(req, res, (err: any) => {
+    if (err) {
+      const msg = err.code === 'LIMIT_FILE_SIZE' ? 'Image trop volumineuse (max 5 Mo).'
+        : (err.code === 'LIMIT_FILE_COUNT' || err.code === 'LIMIT_UNEXPECTED_FILE') ? 'Trop de fichiers (max 3).'
+        : err.message === 'BAD_MIME' ? 'Format d\'image non autorisé (jpeg/png/webp).'
+        : 'Fichier invalide.';
+      res.status(400).json({ error: msg });
+      return;
+    }
+    next();
+  });
+}
 
 function esc(s: string): string {
   return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -17,7 +39,7 @@ export function registerCustomRoutes(app: Express): void {
   const limiter = rateLimit({ windowMs: 60 * 60 * 1000, max: 5, standardHeaders: true, legacyHeaders: false,
     message: { error: 'Trop de demandes. Réessayez plus tard.' } });
 
-  app.post('/api/custom-request', limiter, upload.array('images', 3), async (req: Request, res: Response): Promise<void> => {
+  app.post('/api/custom-request', limiter, uploadImages, async (req: Request, res: Response): Promise<void> => {
     const b = req.body as any;
     // Honeypot : si rempli, bot → succès silencieux sans rien enregistrer
     if (b.website) { res.json({ success: true }); return; }

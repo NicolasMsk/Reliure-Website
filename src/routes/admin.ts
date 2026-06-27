@@ -12,6 +12,20 @@ import { paymentsConfigured, createPaymentLink } from '../lib/payments';
 
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
 
+/** Enveloppe multer (image unique) : transforme une MulterError en 400 JSON propre. */
+function uploadSingle(req: Request, res: Response, next: NextFunction): void {
+  upload.single('image')(req, res, (err: any) => {
+    if (err) {
+      const msg = err.code === 'LIMIT_FILE_SIZE' ? 'Image trop volumineuse (max 5 Mo).'
+        : (err.code === 'LIMIT_FILE_COUNT' || err.code === 'LIMIT_UNEXPECTED_FILE') ? 'Fichier inattendu.'
+        : 'Fichier invalide.';
+      res.status(400).json({ error: msg });
+      return;
+    }
+    next();
+  });
+}
+
 function requireAdmin(req: Request, res: Response, next: NextFunction): void {
   if (req.session?.admin) { next(); return; }
   res.status(401).json({ error: 'Non autorisé.' });
@@ -116,7 +130,7 @@ export function registerAdminRoutes(app: Express): void {
   });
 
   // Upload image
-  app.post('/api/admin/products/:id/images', requireAdmin, upload.single('image'), async (req: Request, res: Response): Promise<void> => {
+  app.post('/api/admin/products/:id/images', requireAdmin, uploadSingle, async (req: Request, res: Response): Promise<void> => {
     const file = (req as any).file as { buffer: Buffer; mimetype: string; originalname: string } | undefined;
     if (!file) { res.status(400).json({ error: 'Aucun fichier.' }); return; }
     if (!isAllowedImage(file.mimetype)) { res.status(400).json({ error: 'Format non autorisé (jpeg/png/webp).' }); return; }

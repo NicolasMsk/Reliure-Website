@@ -53,6 +53,19 @@ on conflict (id) do nothing;
 ```
 Les uploads passent par la clé service (serveur) ; la lecture est publique.
 
+## Bucket Storage privé (photos sur-mesure)
+
+Créer un bucket **privé** `custom-references` :
+- Dashboard Supabase → Storage → New bucket → nom `custom-references`, **NE PAS cocher** Public → Create.
+
+Ou via SQL :
+```sql
+insert into storage.buckets (id, name, public)
+values ('custom-references', 'custom-references', false)
+on conflict (id) do nothing;
+```
+Les photos sont lues par l'admin via des URLs signées temporaires (clé service).
+
 ## Activer les paiements (Stripe) & emails (Resend)
 
 1. **Stripe** : créer un compte, récupérer la clé secrète (`sk_test_…` en test, `sk_live_…` en prod) → `STRIPE_SECRET_KEY`.

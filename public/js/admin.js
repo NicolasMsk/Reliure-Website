@@ -35,6 +35,7 @@ async function showList() {
   document.querySelectorAll('[data-edit]').forEach((b) => b.addEventListener('click', () => openEditor(b.getAttribute('data-edit'))));
   document.querySelectorAll('[data-del]').forEach((b) => b.addEventListener('click', () => onDelete(b.getAttribute('data-del'))));
   loadOrders();
+  loadCustom();
 }
 
 async function loadOrders() {
@@ -144,4 +145,71 @@ async function onUpload(e) {
   const res = await fetch(`/api/admin/products/${EDIT_ID}/images`, { method: 'POST', body: fd });
   if (res.ok) { e.target.value = ''; loadImages(EDIT_ID); alert('Image ajoutée ✓'); }
   else { alert('Échec de l\'upload (format ou taille ?)'); }
+}
+
+/* ── Demandes sur-mesure ──────────────────────────────────────── */
+async function loadCustom() {
+  const tb = document.getElementById('custom-tbody');
+  if (!tb) return;
+  const rows = await fetch('/api/admin/custom-requests').then((r) => r.ok ? r.json() : []).catch(() => []);
+  tb.innerHTML = rows.length ? rows.map(customRow).join('') : `<tr><td colspan="5">Aucune demande pour l'instant.</td></tr>`;
+  tb.querySelectorAll('[data-view]').forEach((b) => b.addEventListener('click', () => viewCustom(b.getAttribute('data-view'))));
+}
+function customRow(r) {
+  const date = (r.created_at || '').slice(0, 10);
+  return `<tr>
+    <td>${escHtml(date)}</td>
+    <td>${escHtml(r.name)}<br><span style="color:var(--text-soft)">${escHtml(r.email)}</span></td>
+    <td>${escHtml(r.budget || '—')}</td>
+    <td>${escHtml(r.status)}</td>
+    <td class="admin-actions"><button class="btn btn--sm" data-view="${escAttr(r.id)}">Voir</button></td>
+  </tr>`;
+}
+async function viewCustom(id) {
+  const box = document.getElementById('custom-detail');
+  const r = await fetch(`/api/admin/custom-requests/${id}`).then((x) => x.ok ? x.json() : null).catch(() => null);
+  if (!r) { box.innerHTML = ''; box.classList.add('hidden'); return; }
+  const imgs = (r.signed_images || []).map((u) => `<img src="${escAttr(u)}" style="width:120px;height:150px;object-fit:cover;border:1px solid var(--line);margin:.3rem" />`).join('');
+  const link = r.stripe_payment_link ? `<p>Lien : <a href="${escAttr(r.stripe_payment_link)}" target="_blank">${escHtml(r.stripe_payment_link)}</a></p>` : '';
+  box.innerHTML = `
+    <div class="service-card">
+      <h3>${escHtml(r.name)} — ${escHtml(r.email)}</h3>
+      <p>${escHtml(r.description).replace(/\n/g, '<br>')}</p>
+      <p><em>Budget : ${escHtml(r.budget || '—')}</em></p>
+      <div>${imgs}</div>
+      <p style="margin-top:1rem">Statut :
+        <select id="custom-status">
+          <option value="nouvelle">Nouvelle</option>
+          <option value="devis_envoyé">Devis envoyé</option>
+          <option value="payée">Payée</option>
+          <option value="terminée">Terminée</option>
+        </select>
+        <button class="btn btn--sm" id="custom-status-save">Enregistrer</button>
+      </p>
+      ${link}
+      <p style="margin-top:1rem">Générer un lien de paiement :
+        <input type="number" id="pl-amount" min="1" step="0.01" placeholder="Montant €" style="width:120px" />
+        <input type="text" id="pl-label" placeholder="Libellé" />
+        <button class="btn btn--sm" id="pl-create">Créer le lien</button>
+      </p>
+      <p class="form-note hidden" id="custom-note2"></p>
+    </div>`;
+  box.classList.remove('hidden');
+  document.getElementById('custom-status').value = r.status;
+  document.getElementById('custom-status-save').addEventListener('click', async () => {
+    const status = document.getElementById('custom-status').value;
+    await fetch(`/api/admin/custom-requests/${id}/status`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status }) });
+    loadCustom();
+  });
+  document.getElementById('pl-create').addEventListener('click', async () => {
+    const amount = Number(document.getElementById('pl-amount').value);
+    const label = document.getElementById('pl-label').value;
+    const note2 = document.getElementById('custom-note2');
+    const res = await fetch(`/api/admin/custom-requests/${id}/payment-link`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ amount, label }) });
+    const body = await res.json().catch(() => ({}));
+    if (res.ok && body.url) { note2.textContent = 'Lien créé : ' + body.url; note2.className = 'form-note is-success'; }
+    else { note2.textContent = body.error || 'Échec de création du lien.'; note2.className = 'form-note is-error'; }
+    note2.hidden = false;
+    viewCustom(id);
+  });
 }

@@ -46,8 +46,7 @@ function card(p, lang) {
     ? `<span class="badge badge--sold">${lang === 'en' ? 'Sold' : 'Vendu'}</span>`
     : `<span class="badge">${lang === 'en' ? 'Unique piece' : 'Pièce unique'}</span>`;
   return `<a class="card" href="/produit/${encodeURIComponent(p.slug)}">
-    <img src="${img}" alt="${esc(title, true)}" />
-    <div class="card-body">${badge}<h3>${esc(title)}</h3><div class="price">${Number(p.price).toFixed(2)} €</div></div>
+    <img src="${escAttr(img)}" alt="${escAttr(title)}" />
+    <div class="card-body">${badge}<h3>${escHtml(title)}</h3><div class="price">${Number(p.price).toFixed(2)} €</div></div>
   </a>`;
 }
-function esc(s, attr){let o=String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');return attr?o.replace(/"/g,'&quot;'):o;}

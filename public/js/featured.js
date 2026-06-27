@@ -2,16 +2,13 @@
 (function () {
   let ITEMS = null; // cache des produits chargés
 
-  function escapeHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-  function escapeAttr(s){return escapeHtml(s).replace(/"/g,'&quot;');}
-
   function cardHTML(p, lang) {
     const title = lang === 'en' ? p.title_en : p.title_fr;
     const img = p.image_url || '/images/placeholder-1.jpg';
     const price = Number(p.price).toFixed(2);
     return `<a class="card" href="/produit/${encodeURIComponent(p.slug)}">
-      <img src="${img}" alt="${escapeAttr(title)}" />
-      <div class="card-body"><h3>${escapeHtml(title)}</h3><div class="price">${price} €</div></div>
+      <img src="${escAttr(img)}" alt="${escAttr(title)}" />
+      <div class="card-body"><h3>${escHtml(title)}</h3><div class="price">${price} €</div></div>
     </a>`;
   }
 

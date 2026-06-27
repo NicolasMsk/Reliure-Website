@@ -14,5 +14,6 @@ conservée ici par courtoisie).
 | `placeholder-1.jpg` | Pile de livres reliés | https://images.unsplash.com/photo-1512820790803-83ca734da794 |
 | `placeholder-2.jpg` | Rangée de livres anciens | https://images.unsplash.com/photo-1457369804613-52c61a468e7d |
 | `placeholder-3.jpg` | Livre ouvert / pages | https://images.unsplash.com/photo-1543002588-bfa74002ed7e |
+| `atelier.jpg` | Atelier / livres anciens reliés | https://images.unsplash.com/photo-1481627834876-b7833e8f5570 |
 
 Licence Unsplash : https://unsplash.com/license

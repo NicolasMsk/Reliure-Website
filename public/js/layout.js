@@ -12,6 +12,7 @@
           <a href="/sur-mesure" data-i18n="nav.custom"></a>
           <a href="/a-propos" data-i18n="nav.about"></a>
           <a href="/contact" data-i18n="nav.contact"></a>
+          <a href="/faq" data-i18n="nav.faq"></a>
           <a href="/compte" data-i18n="nav.account"></a>
           <span class="lang-toggle" role="group" aria-label="Langue / Language">
             <button type="button" data-lang="fr" lang="fr">FR</button>

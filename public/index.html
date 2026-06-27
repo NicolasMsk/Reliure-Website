@@ -21,31 +21,58 @@
 
     <section class="section center">
       <div class="container">
-        <h2 data-i18n="home.intro.title"></h2>
+        <h2 data-i18n="home.savoirfaire.title"></h2>
         <div class="rule"></div>
-        <p style="max-width: 60ch; margin-inline: auto;" data-i18n="home.intro.text"></p>
+        <p style="max-width:60ch;margin-inline:auto" data-i18n="home.savoirfaire.intro"></p>
+        <div class="steps">
+          <div class="step"><span class="step-num">I</span><h3 data-i18n="home.step1.title"></h3><p data-i18n="home.step1.text"></p></div>
+          <div class="step"><span class="step-num">II</span><h3 data-i18n="home.step2.title"></h3><p data-i18n="home.step2.text"></p></div>
+          <div class="step"><span class="step-num">III</span><h3 data-i18n="home.step3.title"></h3><p data-i18n="home.step3.text"></p></div>
+          <div class="step"><span class="step-num">IV</span><h3 data-i18n="home.step4.title"></h3><p data-i18n="home.step4.text"></p></div>
+        </div>
       </div>
     </section>
 
     <section class="section section--alt">
-      <div class="container">
-        <h2 class="center" data-i18n="home.featured.title"></h2>
+      <div class="container center">
+        <h2 data-i18n="home.services.title"></h2>
         <div class="rule"></div>
-        <!-- Placeholder : la grille sera alimentée par la base au Plan 2 -->
-        <div class="grid" id="featured-grid">
-          <article class="card">
-            <img src="/images/placeholder-1.jpg" alt="" />
-            <div class="card-body"><h3>Carnet relié cuir</h3><p>Pièce unique</p></div>
-          </article>
-          <article class="card">
-            <img src="/images/placeholder-2.jpg" alt="" />
-            <div class="card-body"><h3>Registre ancien restauré</h3><p>Pièce unique</p></div>
-          </article>
-          <article class="card">
-            <img src="/images/placeholder-3.jpg" alt="" />
-            <div class="card-body"><h3>Coffret dorure à chaud</h3><p>Pièce unique</p></div>
-          </article>
+        <div class="services">
+          <div class="service-card"><h3 data-i18n="home.service1.title"></h3><p data-i18n="home.service1.text"></p></div>
+          <div class="service-card"><h3 data-i18n="home.service2.title"></h3><p data-i18n="home.service2.text"></p></div>
+          <div class="service-card"><h3 data-i18n="home.service3.title"></h3><p data-i18n="home.service3.text"></p></div>
+          <div class="service-card"><h3 data-i18n="home.service4.title"></h3><p data-i18n="home.service4.text"></p></div>
         </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container center">
+        <h2 data-i18n="home.featured.title"></h2>
+        <div class="rule"></div>
+        <div class="grid" id="featured-grid"></div>
+        <p id="featured-empty" class="hidden" data-i18n="home.featured.empty"></p>
+      </div>
+    </section>
+
+    <section class="section section--alt">
+      <div class="container center">
+        <h2 data-i18n="home.testimonials.title"></h2>
+        <div class="rule"></div>
+        <div class="testimonials">
+          <blockquote class="testimonial"><span data-i18n="home.testi1.text"></span><span class="author" data-i18n="home.testi1.author"></span></blockquote>
+          <blockquote class="testimonial"><span data-i18n="home.testi2.text"></span><span class="author" data-i18n="home.testi2.author"></span></blockquote>
+          <blockquote class="testimonial"><span data-i18n="home.testi3.text"></span><span class="author" data-i18n="home.testi3.author"></span></blockquote>
+        </div>
+      </div>
+    </section>
+
+    <section class="section cta-band">
+      <div class="container">
+        <h2 data-i18n="home.cta.title"></h2>
+        <p data-i18n="home.cta.text"></p>
+        <a class="btn" href="/boutique" data-i18n="home.cta.shop"></a>
+        <a class="btn btn--ghost" href="/contact" data-i18n="home.cta.custom"></a>
       </div>
     </section>
   </main>
@@ -54,5 +81,6 @@
 
   <script src="/js/i18n.js"></script>
   <script src="/js/layout.js"></script>
+  <script src="/js/featured.js"></script>
 </body>
 </html>

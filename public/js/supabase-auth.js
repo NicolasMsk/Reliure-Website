@@ -14,7 +14,7 @@
     });
   }
 
-  async function init() {
+  function init() {
     if (ready) return ready;
     ready = (async () => {
       const cfg = await fetch('/api/config').then((r) => r.json());
@@ -22,7 +22,7 @@
       await loadSdk();
       client = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
       return client;
-    })();
+    })().catch((err) => { ready = null; throw err; });
     return ready;
   }
 

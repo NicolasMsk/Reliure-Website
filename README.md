@@ -63,10 +63,21 @@ Les uploads passent par la clé service (serveur) ; la lecture est publique.
 
 Sans clés valides, le site fonctionne et le bouton « Acheter » affiche un message « paiement bientôt disponible ».
 
+## Comptes clients (Supabase Auth)
+
+Les comptes utilisent Supabase Auth (email + mot de passe), géré côté navigateur via la clé publiable (`SUPABASE_ANON_KEY`).
+
+Configuration Supabase (dashboard) :
+1. **Authentication → URL Configuration** : mettre `Site URL` = l'URL publique du site, et ajouter `{URL}/compte` aux **Redirect URLs** (pour les liens de confirmation et de réinitialisation).
+2. **Authentication → Providers → Email** : activé par défaut. La **confirmation d'email** est active par défaut ; la désactiver ici pour une inscription sans friction (optionnel).
+3. (Optionnel) **Authentication → Emails / SMTP** : configurer un SMTP custom pour des emails de marque.
+
+Aucune clé secrète côté navigateur : seule la clé publiable est exposée (via `GET /api/config`). Le serveur vérifie chaque jeton avec la clé service.
+
 ## Feuille de route (plans)
 
 - **Plan 1** — Fondations & design (ce plan) ✅
 - **Plan 2** — Catalogue produits & admin
 - **Plan 3** — Paiement & commandes (Stripe Checkout + webhook)
-- **Plan 4** — Comptes clients (Supabase Auth)
+- **Plan 4** — Comptes clients (Supabase Auth) ✅
 - **Plan 5** — Parcours sur-mesure

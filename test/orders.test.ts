@@ -1,0 +1,59 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { createOrderFromSession } from '../src/lib/orders';
+
+/** Faux client Supabase enregistrant les inserts et simulant l'unicité de stripe_session_id. */
+function fakeSb(existingSessions: string[] = []) {
+  const inserted: any[] = [];
+  const productUpdates: any[] = [];
+  const sb: any = {
+    from(table: string) {
+      return {
+        _table: table,
+        select() { return this; },
+        eq(col: string, val: any) { this._eqCol = col; this._eqVal = val; return this; },
+        maybeSingle() {
+          if (this._table === 'orders' && this._eqCol === 'stripe_session_id') {
+            return Promise.resolve({ data: existingSessions.includes(this._eqVal) ? { id: 'x' } : null, error: null });
+          }
+          return Promise.resolve({ data: null, error: null });
+        },
+        insert(row: any) { inserted.push({ table: this._table, row }); return { select() { return { single() { return Promise.resolve({ data: { id: 'new', ...row }, error: null }); } }; } }; },
+        update(patch: any) { productUpdates.push({ table: this._table, patch, eqCol: undefined }); const self = this; return { eq(_c: string, _v: any) { productUpdates[productUpdates.length - 1].id = _v; return Promise.resolve({ error: null }); } }; },
+      };
+    },
+  };
+  return { sb, inserted, productUpdates };
+}
+
+const SESSION = {
+  id: 'cs_test_1',
+  amount_total: 12800,
+  customer_details: { email: 'client@test.fr' },
+  shipping_details: { address: { line1: '1 rue X', city: 'Paris', country: 'FR' } },
+  metadata: { product_id: 'p1', slug: 'bible-a', lang: 'fr' },
+} as any;
+
+test('createOrderFromSession insère la commande et marque le produit vendu', async () => {
+  const { sb, inserted, productUpdates } = fakeSb([]);
+  const created = await createOrderFromSession(sb, SESSION);
+  assert.equal(created, true);
+  const order = inserted.find((i) => i.table === 'orders');
+  assert.ok(order);
+  assert.equal(order.row.stripe_session_id, 'cs_test_1');
+  assert.equal(order.row.amount, 128);
+  assert.equal(order.row.customer_email, 'client@test.fr');
+  assert.equal(order.row.product_id, 'p1');
+  assert.equal(order.row.status, 'payée');
+  assert.equal(order.row.lang, 'fr');
+  const upd = productUpdates.find((u) => u.table === 'products');
+  assert.equal(upd.patch.status, 'vendu');
+  assert.equal(upd.id, 'p1');
+});
+
+test('createOrderFromSession est idempotent (session déjà traitée)', async () => {
+  const { sb, inserted } = fakeSb(['cs_test_1']);
+  const created = await createOrderFromSession(sb, SESSION);
+  assert.equal(created, false);
+  assert.equal(inserted.length, 0);
+});

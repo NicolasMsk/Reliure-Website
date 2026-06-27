@@ -34,6 +34,35 @@ async function showList() {
   $('products-tbody').innerHTML = rows.map(rowHTML).join('') || `<tr><td colspan="5">Aucune création pour l'instant.</td></tr>`;
   document.querySelectorAll('[data-edit]').forEach((b) => b.addEventListener('click', () => openEditor(b.getAttribute('data-edit'))));
   document.querySelectorAll('[data-del]').forEach((b) => b.addEventListener('click', () => onDelete(b.getAttribute('data-del'))));
+  loadOrders();
+}
+
+async function loadOrders() {
+  const tb = document.getElementById('orders-tbody');
+  if (!tb) return;
+  const orders = await fetch('/api/admin/orders').then((r) => r.ok ? r.json() : []).catch(() => []);
+  tb.innerHTML = orders.length ? orders.map(orderRow).join('') : `<tr><td colspan="6">Aucune commande pour l'instant.</td></tr>`;
+  tb.querySelectorAll('[data-ship]').forEach((b) => b.addEventListener('click', () => setOrder(b.getAttribute('data-ship'), 'expédiée')));
+  tb.querySelectorAll('[data-deliver]').forEach((b) => b.addEventListener('click', () => setOrder(b.getAttribute('data-deliver'), 'livrée')));
+}
+function orderRow(o) {
+  const a = o.shipping_address || {};
+  const addr = [a.line1, a.postal_code, a.city, a.country].filter(Boolean).join(', ');
+  const date = (o.created_at || '').slice(0, 10);
+  return `<tr>
+    <td>${escHtml(date)}</td>
+    <td>${escHtml(o.customer_email || '')}</td>
+    <td>${Number(o.amount).toFixed(2)} €</td>
+    <td>${escHtml(addr)}</td>
+    <td>${escHtml(o.status)}</td>
+    <td class="admin-actions">
+      <button class="btn btn--sm" data-ship="${escAttr(o.id)}">Expédiée</button>
+      <button class="btn btn--sm" data-deliver="${escAttr(o.id)}">Livrée</button>
+    </td></tr>`;
+}
+async function setOrder(id, status) {
+  await fetch(`/api/admin/orders/${id}/status`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status }) });
+  loadOrders();
 }
 function rowHTML(p) {
   const cat = window.categoryLabel ? window.categoryLabel(p.category, 'fr') : (p.category || '');

@@ -5,6 +5,7 @@ import rateLimit from 'express-rate-limit';
 import { getSupabase } from '../lib/clients';
 import { slugify } from '../lib/slug';
 import { isAllowedImage, uploadProductImage, deleteStorageObject, publicUrl } from '../lib/storage';
+import { listOrders, setOrderStatus } from '../lib/orders';
 
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
 
@@ -137,5 +138,23 @@ export function registerAdminRoutes(app: Express): void {
     const { error } = await sb.from('product_images').delete().eq('id', req.params.id);
     if (error) { res.status(500).json({ error: error.message }); return; }
     res.json({ success: true });
+  });
+
+  // Commandes — liste
+  app.get('/api/admin/orders', requireAdmin, async (_req: Request, res: Response): Promise<void> => {
+    try {
+      const orders = await listOrders(getSupabase());
+      res.json(orders);
+    } catch (err: any) { res.status(500).json({ error: err.message }); }
+  });
+
+  // Commandes — mise à jour du statut
+  app.patch('/api/admin/orders/:id/status', requireAdmin, async (req: Request, res: Response): Promise<void> => {
+    const status = (req.body as any)?.status;
+    if (!['payée', 'expédiée', 'livrée'].includes(status)) { res.status(400).json({ error: 'Statut invalide.' }); return; }
+    try {
+      await setOrderStatus(getSupabase(), req.params.id, status);
+      res.json({ success: true });
+    } catch (err: any) { res.status(500).json({ error: err.message }); }
   });
 }

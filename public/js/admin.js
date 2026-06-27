@@ -196,20 +196,26 @@ async function viewCustom(id) {
     </div>`;
   box.classList.remove('hidden');
   document.getElementById('custom-status').value = r.status;
-  document.getElementById('custom-status-save').addEventListener('click', async () => {
+  document.getElementById('custom-status-save').addEventListener('click', async (ev) => {
+    ev.target.disabled = true;
     const status = document.getElementById('custom-status').value;
-    await fetch(`/api/admin/custom-requests/${id}/status`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status }) });
-    loadCustom();
+    try { await fetch(`/api/admin/custom-requests/${id}/status`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status }) }); }
+    finally { loadCustom(); }
   });
   document.getElementById('pl-create').addEventListener('click', async () => {
+    const plBtn = document.getElementById('pl-create');
     const amount = Number(document.getElementById('pl-amount').value);
     const label = document.getElementById('pl-label').value;
     const note2 = document.getElementById('custom-note2');
-    const res = await fetch(`/api/admin/custom-requests/${id}/payment-link`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ amount, label }) });
-    const body = await res.json().catch(() => ({}));
-    if (res.ok && body.url) { note2.textContent = 'Lien créé : ' + body.url; note2.className = 'form-note is-success'; }
-    else { note2.textContent = body.error || 'Échec de création du lien.'; note2.className = 'form-note is-error'; }
-    note2.hidden = false;
-    viewCustom(id);
+    if (!amount || amount <= 0) { note2.textContent = 'Montant invalide.'; note2.className = 'form-note is-error'; note2.hidden = false; return; }
+    plBtn.disabled = true;
+    try {
+      const res = await fetch(`/api/admin/custom-requests/${id}/payment-link`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ amount, label }) });
+      const body = await res.json().catch(() => ({}));
+      if (res.ok && body.url) { viewCustom(id); }   // re-render shows the new link in the detail panel
+      else { note2.textContent = body.error || 'Échec de création du lien.'; note2.className = 'form-note is-error'; note2.hidden = false; plBtn.disabled = false; }
+    } catch {
+      note2.textContent = 'Échec de création du lien.'; note2.className = 'form-note is-error'; note2.hidden = false; plBtn.disabled = false;
+    }
   });
 }

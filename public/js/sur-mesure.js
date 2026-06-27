@@ -9,6 +9,13 @@
       const btn = form.querySelector('button[type=submit]');
       if (btn) btn.disabled = true;
       note.hidden = true;
+      const fileInput = form.querySelector('input[type=file]');
+      if (fileInput && fileInput.files && fileInput.files.length > 3) {
+        note.textContent = window.I18N.current === 'en' ? 'Please attach at most 3 photos.' : 'Merci de joindre au maximum 3 photos.';
+        note.className = 'form-note is-error'; note.hidden = false;
+        if (btn) btn.disabled = false;
+        return;
+      }
       try {
         const fd = new FormData(form);
         fd.append('lang', window.I18N ? window.I18N.current : 'fr');

@@ -1243,20 +1243,35 @@ export function registerContactRoutes(app: Express): void {
       res.status(400).json({ error: 'Champs obligatoires manquants.' });
       return;
     }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      res.status(400).json({ error: 'Adresse email invalide.' });
+      return;
+    }
     if (!CONTACT_TO) {
       console.error('❌  CONTACT_TO non configuré.');
       res.status(500).json({ error: 'Configuration serveur incomplète.' });
       return;
     }
 
+    // Échappe le HTML pour neutraliser toute injection dans l'email reçu.
+    const esc = (s: string) =>
+      s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    const safeName = name.replace(/[\r\n]+/g, ' ').trim(); // évite l'injection d'en-tête dans le sujet
+
     try {
-      await getResend().emails.send({
+      // Resend NE LÈVE PAS d'exception sur erreur API : il résout avec { data, error }.
+      const { error } = await getResend().emails.send({
         from: EMAIL_FROM,
         to: CONTACT_TO,
         replyTo: email,
-        subject: `📩 Nouveau message — ${name}`,
-        html: `<p><strong>De :</strong> ${name} (${email})</p><p>${String(message).replace(/</g, '&lt;').replace(/\n/g, '<br>')}</p>`,
+        subject: `📩 Nouveau message — ${safeName}`,
+        html: `<p><strong>De :</strong> ${esc(name)} (${esc(email)})</p><p>${esc(message).replace(/\n/g, '<br>')}</p>`,
       });
+      if (error) {
+        console.error('⚠️  Resend a renvoyé une erreur :', error);
+        res.status(502).json({ error: 'Envoi impossible. Réessayez plus tard.' });
+        return;
+      }
       res.json({ success: true });
     } catch (err: any) {
       console.error('⚠️  Échec envoi contact :', err.message);
@@ -1463,7 +1478,31 @@ ALTER TABLE custom_requests ENABLE ROW LEVEL SECURITY;
 CREATE POLICY products_public_read ON products
   FOR SELECT USING (status = 'disponible');
 CREATE POLICY product_images_public_read ON product_images
-  FOR SELECT USING (true);
+  FOR SELECT USING (
+    EXISTS (
+      SELECT 1 FROM products p
+      WHERE p.id = product_images.product_id
+        AND p.status = 'disponible'
+    )
+  );
+
+-- ── Maintien automatique de updated_at ─────────────────
+CREATE OR REPLACE FUNCTION set_updated_at() RETURNS trigger AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_products_updated ON products;
+CREATE TRIGGER trg_products_updated
+  BEFORE UPDATE ON products
+  FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+
+DROP TRIGGER IF EXISTS trg_custom_requests_updated ON custom_requests;
+CREATE TRIGGER trg_custom_requests_updated
+  BEFORE UPDATE ON custom_requests
+  FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 ```
 
 - [ ] **Step 2 : Appliquer le schéma dans Supabase**

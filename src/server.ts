@@ -16,7 +16,6 @@ app.listen(PORT, () => {
   ✦ ═══════════════════════════════════════════ ✦
     Reliure — serveur démarré
     → http://localhost:${PORT}
-    → Admin : http://localhost:${PORT}/admin
   ✦ ═══════════════════════════════════════════ ✦
   `);
 });

@@ -33,6 +33,12 @@ Voir `.env.example`. Requises au démarrage : `SUPABASE_URL`, `SUPABASE_SERVICE_
 
 Exécuter `schema.sql` dans le SQL Editor de Supabase.
 
+## Migration données (2026-06-28)
+
+Exécuter `migrations/2026-06-28-data-enrichment.sql` dans Supabase → SQL Editor (idempotent).
+Ajoute : coordonnées client (téléphone/adresse), n° de suivi commande, téléphone sur-mesure,
+table `contact_messages` (messages persistés) et `consents` (journal RGPD).
+
 ## Déploiement Railway
 
 1. Connecter le dépôt à Railway.

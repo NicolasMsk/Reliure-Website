@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reliure — Contact</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="site-header" id="site-header"></header>
+  <main>
+    <section class="section">
+      <div class="container" style="max-width: 620px;">
+        <h1 class="center" data-i18n="contact.title"></h1>
+        <div class="rule"></div>
+        <p class="center" data-i18n="contact.intro"></p>
+        <form id="contact-form">
+          <label class="field">
+            <span data-i18n="contact.name"></span>
+            <input type="text" name="name" required />
+          </label>
+          <label class="field">
+            <span data-i18n="contact.email"></span>
+            <input type="email" name="email" required />
+          </label>
+          <label class="field">
+            <span data-i18n="contact.message"></span>
+            <textarea name="message" required></textarea>
+          </label>
+          <button class="btn" type="submit" data-i18n="contact.send"></button>
+          <p class="form-note" id="contact-note" hidden></p>
+        </form>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer" id="site-footer"></footer>
+  <script src="/js/i18n.js"></script>
+  <script src="/js/layout.js"></script>
+  <script src="/js/contact.js"></script>
+</body>
+</html>

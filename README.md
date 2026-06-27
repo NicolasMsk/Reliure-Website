@@ -53,6 +53,16 @@ on conflict (id) do nothing;
 ```
 Les uploads passent par la clé service (serveur) ; la lecture est publique.
 
+## Activer les paiements (Stripe) & emails (Resend)
+
+1. **Stripe** : créer un compte, récupérer la clé secrète (`sk_test_…` en test, `sk_live_…` en prod) → `STRIPE_SECRET_KEY`.
+2. **Webhook Stripe** : créer un endpoint pointant sur `{APP_URL}/api/stripe/webhook`, événement `checkout.session.completed`, copier le secret `whsec_…` → `STRIPE_WEBHOOK_SECRET`.
+   - En local : `stripe listen --forward-to localhost:3000/api/stripe/webhook` (Stripe CLI) donne un `whsec_…` de test.
+3. **Resend** : vérifier le domaine d'envoi, mettre `RESEND_API_KEY` (`re_…`) et un `EMAIL_FROM` vérifié ; `ORDER_NOTIFY_EMAIL` (ou `CONTACT_TO`) reçoit les notifications de commande.
+4. **Frais de port** : modifier `SHIPPING_RATES` / `SHIPPING_COUNTRIES` dans `src/config.ts`.
+
+Sans clés valides, le site fonctionne et le bouton « Acheter » affiche un message « paiement bientôt disponible ».
+
 ## Feuille de route (plans)
 
 - **Plan 1** — Fondations & design (ce plan) ✅

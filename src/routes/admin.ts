@@ -3,7 +3,7 @@ import multer from 'multer';
 import rateLimit from 'express-rate-limit';
 import { getSupabase } from '../lib/clients';
 import { slugify } from '../lib/slug';
-import { isAllowedImage, uploadProductImage, deleteStorageObject } from '../lib/storage';
+import { isAllowedImage, uploadProductImage, deleteStorageObject, publicUrl } from '../lib/storage';
 
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
 
@@ -91,6 +91,15 @@ export function registerAdminRoutes(app: Express): void {
     const { error } = await sb.from('products').delete().eq('id', req.params.id);
     if (error) { res.status(500).json({ error: error.message }); return; }
     res.json({ success: true });
+  });
+
+  // Lister les images d'un produit (tous statuts) — usage admin
+  app.get('/api/admin/products/:id/images', requireAdmin, async (req: Request, res: Response): Promise<void> => {
+    const { data, error } = await getSupabase()
+      .from('product_images').select('id, storage_path, sort_order')
+      .eq('product_id', req.params.id).order('sort_order', { ascending: true });
+    if (error) { res.status(500).json({ error: error.message }); return; }
+    res.json((data ?? []).map((im) => ({ id: im.id, url: publicUrl(im.storage_path), sort_order: im.sort_order })));
   });
 
   // Upload image

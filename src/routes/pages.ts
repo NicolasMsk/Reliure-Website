@@ -8,6 +8,7 @@ const PAGE_ALIASES: Record<string, string> = {
   '/contact': 'contact.html',
   '/faq': 'faq.html',
   '/boutique': 'boutique.html',
+  '/admin': 'admin.html',
 };
 
 export function registerPageRoutes(app: Express, publicDir: string): void {

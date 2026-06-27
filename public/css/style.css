@@ -286,14 +286,14 @@ a:hover { color: var(--accent-2); }
   font-size: 1.05rem; margin-bottom: 0.35rem; color: var(--accent);
   letter-spacing: 0.01em;
 }
-.field input, .field textarea {
+.field input, .field textarea, .field select {
   width: 100%; padding: 0.72rem 0.95rem;
   font-family: var(--font-body); font-size: 1rem;
   border: 1px solid var(--line); border-radius: 2px;
   background: var(--cream-soft); color: var(--text);
   transition: border-color .2s ease, box-shadow .2s ease;
 }
-.field input:focus, .field textarea:focus {
+.field input:focus, .field textarea:focus, .field select:focus {
   outline: none;
   border-color: var(--gold-deep);
   box-shadow: 0 0 0 3px rgba(210, 191, 129, 0.22);

@@ -7,6 +7,12 @@ export function isAllowedImage(mime: string): boolean {
   return ALLOWED.includes(mime);
 }
 
+/** URL publique d'un objet du bucket Storage product-images. */
+export function publicUrl(storagePath: string): string {
+  const base = process.env.SUPABASE_URL!.replace(/\/$/, '');
+  return `${base}/storage/v1/object/public/${BUCKET}/${storagePath}`;
+}
+
 /** Téléverse un buffer image, renvoie le storage_path. */
 export async function uploadProductImage(
   productId: string, buffer: Buffer, mime: string, ext: string, index: number,

@@ -1,4 +1,5 @@
 import { Express, Request, Response, NextFunction } from 'express';
+import crypto from 'crypto';
 import multer from 'multer';
 import rateLimit from 'express-rate-limit';
 import { getSupabase } from '../lib/clients';
@@ -10,6 +11,14 @@ const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 *
 function requireAdmin(req: Request, res: Response, next: NextFunction): void {
   if (req.session?.admin) { next(); return; }
   res.status(401).json({ error: 'Non autorisé.' });
+}
+
+/** Comparaison à temps constant, sûre vis-à-vis des longueurs différentes. */
+function safeEqual(a: string, b: string): boolean {
+  const ab = Buffer.from(a, 'utf8');
+  const bb = Buffer.from(b, 'utf8');
+  if (ab.length !== bb.length) return false;
+  return crypto.timingSafeEqual(ab, bb);
 }
 
 /** Génère un slug unique (suffixe -2, -3… si collision). */
@@ -31,7 +40,7 @@ export function registerAdminRoutes(app: Express): void {
 
   app.post('/api/admin/login', loginLimiter, (req: Request, res: Response): void => {
     const { password } = req.body as { password?: string };
-    if (password && password === process.env.ADMIN_PASSWORD) {
+    if (password && process.env.ADMIN_PASSWORD && safeEqual(password, process.env.ADMIN_PASSWORD)) {
       req.session!.admin = true; res.json({ success: true });
     } else { res.status(401).json({ error: 'Mot de passe incorrect.' }); }
   });

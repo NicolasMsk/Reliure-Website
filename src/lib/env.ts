@@ -6,6 +6,7 @@ export const REQUIRED_ENV = [
   'STRIPE_WEBHOOK_SECRET',
   'RESEND_API_KEY',
   'ADMIN_PASSWORD',
+  'SESSION_SECRET',
 ] as const;
 
 /**

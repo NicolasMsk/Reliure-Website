@@ -39,7 +39,10 @@ export function createApp(): Express {
   app.use(
     cookieSession({
       name: 'reliure_admin',
-      keys: [process.env.ADMIN_PASSWORD || 'dev-secret'],
+      // SESSION_SECRET est requis au démarrage via server.ts (validateEnv) ;
+      // le fallback 'dev-test-insecure' est donc inatteignable en production et
+      // n'existe que pour les tests qui construisent createApp() sans cet env.
+      keys: [process.env.SESSION_SECRET || process.env.ADMIN_PASSWORD || 'dev-test-insecure'],
       maxAge: 24 * 60 * 60 * 1000,
       httpOnly: true,
       sameSite: 'lax',

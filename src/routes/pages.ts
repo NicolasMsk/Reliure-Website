@@ -16,4 +16,9 @@ export function registerPageRoutes(app: Express, publicDir: string): void {
       res.sendFile(path.join(publicDir, file));
     });
   }
+
+  // Fiche produit — le HTML est statique, le slug est résolu côté client via l'API.
+  app.get('/produit/:slug', (_req, res) => {
+    res.sendFile(path.join(publicDir, 'produit.html'));
+  });
 }

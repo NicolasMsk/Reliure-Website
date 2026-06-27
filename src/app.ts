@@ -7,6 +7,7 @@ import path from 'path';
 import { IS_PRODUCTION } from './config';
 import { registerPageRoutes } from './routes/pages';
 import { registerContactRoutes } from './routes/contact';
+import { registerProductRoutes } from './routes/products';
 
 const PUBLIC_DIR = path.join(__dirname, '..', 'public');
 
@@ -53,6 +54,7 @@ export function createApp(): Express {
   // Routes des pages (URLs propres) AVANT le static pour gérer les alias
   registerPageRoutes(app, PUBLIC_DIR);
   registerContactRoutes(app);
+  registerProductRoutes(app);
 
   // Assets avec cache
   app.use('/css', express.static(path.join(PUBLIC_DIR, 'css'), { maxAge: '7d' }));

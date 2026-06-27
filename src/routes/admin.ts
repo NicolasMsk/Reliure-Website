@@ -6,6 +6,9 @@ import { getSupabase } from '../lib/clients';
 import { slugify } from '../lib/slug';
 import { isAllowedImage, uploadProductImage, deleteStorageObject, publicUrl } from '../lib/storage';
 import { listOrders, setOrderStatus } from '../lib/orders';
+import { listCustomRequests, getCustomRequest, setCustomRequestStatus, attachPaymentLink, VALID_STATUSES } from '../lib/custom-requests';
+import { signedReferenceUrl } from '../lib/storage';
+import { paymentsConfigured, createPaymentLink } from '../lib/payments';
 
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
 
@@ -156,5 +159,46 @@ export function registerAdminRoutes(app: Express): void {
       await setOrderStatus(getSupabase(), req.params.id, status);
       res.json({ success: true });
     } catch (err: any) { res.status(500).json({ error: err.message }); }
+  });
+
+  // Demandes sur-mesure — liste
+  app.get('/api/admin/custom-requests', requireAdmin, async (_req: Request, res: Response): Promise<void> => {
+    try { res.json(await listCustomRequests(getSupabase())); }
+    catch (err: any) { res.status(500).json({ error: err.message }); }
+  });
+
+  // Demandes sur-mesure — détail (URLs signées des photos)
+  app.get('/api/admin/custom-requests/:id', requireAdmin, async (req: Request, res: Response): Promise<void> => {
+    try {
+      const r = await getCustomRequest(getSupabase(), req.params.id);
+      if (!r) { res.status(404).json({ error: 'Demande introuvable.' }); return; }
+      const images: string[] = [];
+      for (const p of (r.reference_images ?? [])) {
+        const u = await signedReferenceUrl(p);
+        if (u) images.push(u);
+      }
+      res.json({ ...r, signed_images: images });
+    } catch (err: any) { res.status(500).json({ error: err.message }); }
+  });
+
+  // Demandes sur-mesure — mise à jour du statut
+  app.patch('/api/admin/custom-requests/:id/status', requireAdmin, async (req: Request, res: Response): Promise<void> => {
+    const status = (req.body as any)?.status;
+    if (!VALID_STATUSES.includes(status)) { res.status(400).json({ error: 'Statut invalide.' }); return; }
+    try { await setCustomRequestStatus(getSupabase(), req.params.id, status); res.json({ success: true }); }
+    catch (err: any) { res.status(500).json({ error: err.message }); }
+  });
+
+  // Demandes sur-mesure — génération d'un lien de paiement Stripe
+  app.post('/api/admin/custom-requests/:id/payment-link', requireAdmin, async (req: Request, res: Response): Promise<void> => {
+    if (!paymentsConfigured()) { res.status(503).json({ error: 'Paiement indisponible (clés Stripe manquantes).', code: 'payments_unavailable' }); return; }
+    const amount = Number((req.body as any)?.amount);
+    const label = typeof (req.body as any)?.label === 'string' ? (req.body as any).label.trim().slice(0, 200) : '';
+    if (!amount || amount <= 0) { res.status(400).json({ error: 'Montant invalide.' }); return; }
+    try {
+      const { url } = await createPaymentLink(amount, label || 'Création sur-mesure', req.params.id);
+      await attachPaymentLink(getSupabase(), req.params.id, url);
+      res.json({ url });
+    } catch (err: any) { console.error('payment-link', err.message); res.status(502).json({ error: 'Création du lien impossible.' }); }
   });
 }

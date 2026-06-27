@@ -10,14 +10,21 @@ export async function ensureCustomer(sb: SupabaseClient, authUser: AuthUser, nam
   const { data, error } = await sb.from('customers')
     .insert({ auth_user_id: authUser.id, email: authUser.email ?? null, name: name ?? null })
     .select().single();
-  if (error) throw new Error(error.message);
+  if (error) {
+    // Course concurrente (ex. /me et /orders au premier chargement) → relire la fiche.
+    if ((error as any).code === '23505') {
+      const { data: existing } = await sb.from('customers').select('*').eq('auth_user_id', authUser.id).maybeSingle();
+      if (existing) return existing as CustomerRow;
+    }
+    throw new Error(error.message);
+  }
   return data as CustomerRow;
 }
 
 /** Commandes du client : par customer_id OU par email (vérifié), dédupliquées par id. */
 export async function getCustomerOrders(sb: SupabaseClient, customerId: string, email: string | null): Promise<any[]> {
   let query = sb.from('orders').select('*');
-  if (email) query = query.or(`customer_id.eq.${customerId},customer_email.eq.${email}`);
+  if (email) query = query.or(`customer_id.eq.${customerId},customer_email.eq."${email}"`);
   else query = query.eq('customer_id', customerId);
   const { data, error } = await query.order('created_at', { ascending: false });
   if (error) throw new Error(error.message);

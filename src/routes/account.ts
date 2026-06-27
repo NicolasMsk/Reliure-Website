@@ -28,10 +28,11 @@ export function registerAccountRoutes(app: Express): void {
   });
 
   app.patch('/api/account/me', requireUser, async (req: AuthedRequest, res: Response): Promise<void> => {
-    const name = (req.body as any)?.name;
+    const raw = (req.body as any)?.name;
+    const name = typeof raw === 'string' ? raw.trim().slice(0, 200) : null;
     try {
       const c = await ensureCustomer(getSupabase(), req.authUser!);
-      const { error } = await getSupabase().from('customers').update({ name: name ?? null }).eq('id', c.id);
+      const { error } = await getSupabase().from('customers').update({ name }).eq('id', c.id);
       if (error) { res.status(500).json({ error: error.message }); return; }
       res.json({ success: true });
     } catch (err: any) { res.status(500).json({ error: err.message }); }

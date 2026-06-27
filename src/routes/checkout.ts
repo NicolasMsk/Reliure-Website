@@ -29,7 +29,10 @@ export function registerCheckoutRoutes(app: Express): void {
             const c = await ensureCustomer(getSupabase(), { id: data.user.id, email: data.user.email });
             customerId = c.id;
           }
-        } catch { /* invité — on continue sans customerId */ }
+        } catch (e: any) {
+          // Token invalide/expiré → on continue en invité, sans bloquer l'achat.
+          console.warn('checkout: résolution client échouée, commande en invité', e?.message);
+        }
       }
 
       const session = await createCheckoutSession(product, lang, customerId);

@@ -28,7 +28,7 @@ function render() {
 }
 
 function view(p, lang) {
-  const buyLabel = lang === 'en' ? 'Buy' : 'Acheter';
+  const buyLabel = (window.I18N && window.I18N.t) ? window.I18N.t('product.buy') : (lang === 'en' ? 'Buy' : 'Acheter');
   const title = lang === 'en' ? p.title_en : p.title_fr;
   const desc = (lang === 'en' ? p.description_en : p.description_fr) || '';
   const cat = window.categoryLabel ? window.categoryLabel(p.category, lang) : p.category;

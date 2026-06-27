@@ -10,6 +10,7 @@ import { registerContactRoutes } from './routes/contact';
 import { registerProductRoutes } from './routes/products';
 import { registerAdminRoutes } from './routes/admin';
 import { registerCheckoutRoutes } from './routes/checkout';
+import { registerStripeWebhook } from './routes/stripe-webhook';
 
 const PUBLIC_DIR = path.join(__dirname, '..', 'public');
 
@@ -25,6 +26,9 @@ export function createApp(): Express {
       crossOriginEmbedderPolicy: false,
     }),
   );
+  // Webhook Stripe — corps brut, AVANT express.json()
+  registerStripeWebhook(app);
+
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 

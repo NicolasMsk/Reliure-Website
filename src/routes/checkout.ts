@@ -2,6 +2,7 @@ import { Express, Request, Response } from 'express';
 import { getSupabase, getStripe } from '../lib/clients';
 import { getProductBySlug } from '../lib/products';
 import { paymentsConfigured, createCheckoutSession } from '../lib/payments';
+import { ensureCustomer } from '../lib/customers';
 
 export function registerCheckoutRoutes(app: Express): void {
   app.post('/api/checkout', async (req: Request, res: Response): Promise<void> => {
@@ -16,7 +17,22 @@ export function registerCheckoutRoutes(app: Express): void {
     try {
       const product = await getProductBySlug(getSupabase(), slug);
       if (!product) { res.status(409).json({ error: 'Cette pièce n\'est plus disponible.' }); return; }
-      const session = await createCheckoutSession(product, lang);
+
+      // Client connecté ? (Bearer optionnel) → rattacher la commande
+      let customerId: string | undefined;
+      const auth = req.headers.authorization || '';
+      const token = auth.startsWith('Bearer ') ? auth.slice(7) : '';
+      if (token) {
+        try {
+          const { data } = await getSupabase().auth.getUser(token);
+          if (data?.user) {
+            const c = await ensureCustomer(getSupabase(), { id: data.user.id, email: data.user.email });
+            customerId = c.id;
+          }
+        } catch { /* invité — on continue sans customerId */ }
+      }
+
+      const session = await createCheckoutSession(product, lang, customerId);
       res.json({ url: session.url });
     } catch (err: any) {
       console.error('POST /api/checkout', err.message);

@@ -57,6 +57,21 @@ test('createOrderFromSession insère la commande et marque le produit vendu', as
   assert.equal(upd.id, 'p1');
 });
 
+test('createOrderFromSession rattache le customer_id depuis metadata', async () => {
+  const { sb, inserted } = fakeSb([]);
+  const sessionWithCustomer = { ...SESSION, metadata: { ...SESSION.metadata, customer_id: 'cust-9' } } as any;
+  await createOrderFromSession(sb, sessionWithCustomer);
+  const order = inserted.find((i) => i.table === 'orders');
+  assert.equal(order.row.customer_id, 'cust-9');
+});
+
+test('createOrderFromSession met customer_id à null si absent', async () => {
+  const { sb, inserted } = fakeSb([]);
+  await createOrderFromSession(sb, SESSION);
+  const order = inserted.find((i) => i.table === 'orders');
+  assert.equal(order.row.customer_id, null);
+});
+
 test('createOrderFromSession est idempotent (session déjà traitée)', async () => {
   const { sb, inserted } = fakeSb(['cs_test_1']);
   const created = await createOrderFromSession(sb, SESSION);

@@ -26,11 +26,13 @@ export async function createOrderFromSession(sb: SupabaseClient, session: Stripe
 
   const lang = (session.metadata?.lang === 'en' ? 'en' : 'fr') as 'fr' | 'en';
   const productId = session.metadata?.product_id ?? null;
+  const customerId = session.metadata?.customer_id || null;
   const shipping = (session as any).shipping_details?.address ?? (session as any).customer_details?.address ?? null;
 
   const { error: insErr } = await sb.from('orders').insert({
     stripe_session_id: session.id,
     product_id: productId,
+    customer_id: customerId,
     customer_email: session.customer_details?.email ?? null,
     amount: (session.amount_total ?? 0) / 100,
     shipping_address: shipping,

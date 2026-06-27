@@ -35,14 +35,14 @@ export function buildShippingOptions(lang: 'fr' | 'en') {
 }
 
 /** Crée une session Stripe Checkout pour un produit unique. */
-export async function createCheckoutSession(product: ProductRow, lang: 'fr' | 'en'): Promise<Stripe.Checkout.Session> {
+export async function createCheckoutSession(product: ProductRow, lang: 'fr' | 'en', customerId?: string): Promise<Stripe.Checkout.Session> {
   return getStripe().checkout.sessions.create({
     mode: 'payment',
     line_items: [buildLineItem(product, lang) as any],
     shipping_options: buildShippingOptions(lang) as any,
     shipping_address_collection: { allowed_countries: SHIPPING_COUNTRIES as any },
     locale: lang,
-    metadata: { product_id: product.id, slug: product.slug, lang },
+    metadata: { product_id: product.id, slug: product.slug, lang, customer_id: customerId ?? '' },
     success_url: `${APP_URL}/merci?session_id={CHECKOUT_SESSION_ID}&lang=${lang}`,
     cancel_url: `${APP_URL}/produit/${product.slug}`,
   });

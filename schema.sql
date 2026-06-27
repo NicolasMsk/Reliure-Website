@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS products (
   updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 CREATE INDEX IF NOT EXISTS idx_products_status ON products (status);
-CREATE INDEX IF NOT EXISTS idx_products_slug ON products (slug);
+-- (Pas d'index sur slug : la contrainte UNIQUE crée déjà l'index sous-jacent.)
 
 -- ── Images de produits ─────────────────────────────────
 CREATE TABLE IF NOT EXISTS product_images (
@@ -91,4 +91,28 @@ ALTER TABLE custom_requests ENABLE ROW LEVEL SECURITY;
 CREATE POLICY products_public_read ON products
   FOR SELECT USING (status = 'disponible');
 CREATE POLICY product_images_public_read ON product_images
-  FOR SELECT USING (true);
+  FOR SELECT USING (
+    EXISTS (
+      SELECT 1 FROM products p
+      WHERE p.id = product_images.product_id
+        AND p.status = 'disponible'
+    )
+  );
+
+-- ── Maintien automatique de updated_at ─────────────────
+CREATE OR REPLACE FUNCTION set_updated_at() RETURNS trigger AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_products_updated ON products;
+CREATE TRIGGER trg_products_updated
+  BEFORE UPDATE ON products
+  FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+
+DROP TRIGGER IF EXISTS trg_custom_requests_updated ON custom_requests;
+CREATE TRIGGER trg_custom_requests_updated
+  BEFORE UPDATE ON custom_requests
+  FOR EACH ROW EXECUTE FUNCTION set_updated_at();

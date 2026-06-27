@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reliure — Sur-mesure</title>
+  <meta name="description" content="Demande de création ou restauration sur-mesure : bibles, livres religieux, reliure d'art." />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="site-header" id="site-header"></header>
+  <main>
+    <!-- Le déroulé d'une commande : une vraie séquence (échange → devis → création) -->
+    <section class="section">
+      <div class="container center">
+        <span class="eyebrow" data-i18n="custom.eyebrow"></span>
+        <h1 data-i18n="custom.title"></h1>
+        <div class="rule"></div>
+        <p style="max-width:54ch;margin-inline:auto" data-i18n="custom.intro"></p>
+      </div>
+    </section>
+
+    <section class="section section--alt">
+      <div class="container">
+        <h2 class="center" data-i18n="custom.steps.title"></h2>
+        <div class="rule"></div>
+        <ol class="steps" style="list-style:none;padding:0">
+          <li class="step">
+            <span class="step-num">I</span>
+            <h3 data-i18n="custom.step1.title"></h3>
+            <p data-i18n="custom.step1.text"></p>
+          </li>
+          <li class="step">
+            <span class="step-num">II</span>
+            <h3 data-i18n="custom.step2.title"></h3>
+            <p data-i18n="custom.step2.text"></p>
+          </li>
+          <li class="step">
+            <span class="step-num">III</span>
+            <h3 data-i18n="custom.step3.title"></h3>
+            <p data-i18n="custom.step3.text"></p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container" style="max-width:620px">
+        <h2 class="center" data-i18n="custom.form.title"></h2>
+        <div class="rule"></div>
+        <form id="custom-form">
+          <label class="field"><span data-i18n="custom.name"></span><input type="text" name="name" required /></label>
+          <label class="field"><span data-i18n="custom.email"></span><input type="email" name="email" required /></label>
+          <label class="field"><span data-i18n="custom.budget"></span><input type="text" name="budget" /></label>
+          <label class="field"><span data-i18n="custom.description"></span><textarea name="description" required></textarea></label>
+          <label class="field"><span data-i18n="custom.images"></span><input type="file" name="images" accept="image/*" multiple /></label>
+          <!-- Honeypot anti-bot (caché) -->
+          <input type="text" name="website" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true" />
+          <button class="btn" type="submit" data-i18n="custom.send"></button>
+          <p class="form-note hidden" id="custom-note"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer" id="site-footer"></footer>
+  <script src="/js/i18n.js"></script>
+  <script src="/js/util.js"></script>
+  <script src="/js/layout.js"></script>
+  <script src="/js/sur-mesure.js"></script>
+</body>
+</html>

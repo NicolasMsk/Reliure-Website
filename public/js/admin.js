@@ -120,11 +120,12 @@ function orderRow(o) {
 async function setOrder(id, status, btn) {
   if (btn) btn.disabled = true;
   const input = document.querySelector(`.track-input[data-track="${id}"]`);
-  const tracking_number = input ? input.value : undefined;
+  const v = input ? input.value.trim() : '';
+  const body = v ? { status, tracking_number: v } : { status };
   try {
     const res = await fetch(`/api/admin/orders/${id}/status`, {
       method: 'PATCH', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status, tracking_number }),
+      body: JSON.stringify(body),
     });
     if (!res.ok) { alert('Échec de la mise à jour de la commande.'); if (btn) btn.disabled = false; return; }
     loadOrders();

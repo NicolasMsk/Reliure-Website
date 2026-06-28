@@ -106,12 +106,18 @@
       f.dataset.wired = '1';
       f.addEventListener('submit', async (e) => {
         e.preventDefault();
+        const sbtn = f.querySelector('button[type=submit]');
+        if (sbtn) sbtn.disabled = true;
         const note = document.getElementById('profile-note');
-        const tk = await window.AUTH.getToken();
-        const body = Object.fromEntries(new FormData(f).entries());
-        const res = await fetch('/api/account/me', { method: 'PATCH', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${tk}` }, body: JSON.stringify(body) });
-        note.textContent = window.I18N.t(res.ok ? 'account.saved' : 'account.error');
-        note.className = 'form-note ' + (res.ok ? 'is-success' : 'is-error'); note.hidden = false;
+        try {
+          const tk = await window.AUTH.getToken();
+          const body = Object.fromEntries(new FormData(f).entries());
+          const res = await fetch('/api/account/me', { method: 'PATCH', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${tk}` }, body: JSON.stringify(body) });
+          note.textContent = window.I18N.t(res.ok ? 'account.saved' : 'account.error');
+          note.className = 'form-note ' + (res.ok ? 'is-success' : 'is-error'); note.hidden = false;
+        } catch {
+          note.textContent = window.I18N.t('account.error'); note.className = 'form-note is-error'; note.hidden = false;
+        } finally { if (sbtn) sbtn.disabled = false; }
       });
     }
     const orders = await fetch('/api/account/orders', { headers: { Authorization: `Bearer ${token}` } }).then((r) => r.ok ? r.json() : []).catch(() => []);

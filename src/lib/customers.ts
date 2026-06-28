@@ -1,7 +1,7 @@
 import { SupabaseClient } from '@supabase/supabase-js';
 
 export interface AuthUser { id: string; email?: string | null; }
-export interface CustomerRow { id: string; auth_user_id: string; name: string | null; email: string | null; created_at: string; }
+export interface CustomerRow { id: string; auth_user_id: string; name: string | null; email: string | null; created_at: string; phone?: string | null; address_line1?: string | null; address_line2?: string | null; postal_code?: string | null; city?: string | null; country?: string | null; }
 
 /** Trouve la fiche customer par auth_user_id, la crée si absente. */
 export async function ensureCustomer(sb: SupabaseClient, authUser: AuthUser, name?: string): Promise<CustomerRow> {

@@ -173,11 +173,7 @@ export function registerAdminRoutes(app: Express): void {
     const tracking = typeof (req.body as any)?.tracking_number === 'string' ? (req.body as any).tracking_number.trim().slice(0, 100) : undefined;
     if (!['payée', 'expédiée', 'livrée'].includes(status)) { res.status(400).json({ error: 'Statut invalide.' }); return; }
     try {
-      await setOrderStatus(getSupabase(), req.params.id, status);
-      if (tracking !== undefined) {
-        const { error } = await getSupabase().from('orders').update({ tracking_number: tracking || null }).eq('id', req.params.id);
-        if (error) { res.status(500).json({ error: error.message }); return; }
-      }
+      await setOrderStatus(getSupabase(), req.params.id, status, tracking);
       res.json({ success: true });
     } catch (err: any) { res.status(500).json({ error: err.message }); }
   });

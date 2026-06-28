@@ -25,29 +25,25 @@ export function registerAccountRoutes(app: Express): void {
       const c = await ensureCustomer(getSupabase(), req.authUser!);
       res.json({
         email: c.email, name: c.name,
-        phone: (c as any).phone ?? '', address_line1: (c as any).address_line1 ?? '',
-        address_line2: (c as any).address_line2 ?? '', postal_code: (c as any).postal_code ?? '',
-        city: (c as any).city ?? '', country: (c as any).country ?? '',
+        phone: c.phone ?? '', address_line1: c.address_line1 ?? '',
+        address_line2: c.address_line2 ?? '', postal_code: c.postal_code ?? '',
+        city: c.city ?? '', country: c.country ?? '',
       });
     } catch (err: any) { res.status(500).json({ error: err.message }); }
   });
 
   app.patch('/api/account/me', requireUser, async (req: AuthedRequest, res: Response): Promise<void> => {
     const b = req.body as any;
-    const str = (v: any, n: number) => (typeof v === 'string' ? v.trim().slice(0, n) : null);
-    const patch: Record<string, any> = {
-      name: str(b.name, 200),
-      phone: str(b.phone, 40),
-      address_line1: str(b.address_line1, 200),
-      address_line2: str(b.address_line2, 200),
-      postal_code: str(b.postal_code, 20),
-      city: str(b.city, 120),
-      country: str(b.country, 80),
-    };
+    const patch: Record<string, any> = {};
+    const set = (k: string, n: number) => { if (typeof b[k] === 'string') patch[k] = b[k].trim().slice(0, n); };
+    set('name', 200); set('phone', 40); set('address_line1', 200); set('address_line2', 200);
+    set('postal_code', 20); set('city', 120); set('country', 80);
     try {
       const c = await ensureCustomer(getSupabase(), req.authUser!);
-      const { error } = await getSupabase().from('customers').update(patch).eq('id', c.id);
-      if (error) { res.status(500).json({ error: error.message }); return; }
+      if (Object.keys(patch).length > 0) {
+        const { error } = await getSupabase().from('customers').update(patch).eq('id', c.id);
+        if (error) { res.status(500).json({ error: error.message }); return; }
+      }
       res.json({ success: true });
     } catch (err: any) { res.status(500).json({ error: err.message }); }
   });

@@ -58,11 +58,12 @@ export async function listOrders(sb: SupabaseClient): Promise<OrderRow[]> {
   return (data ?? []) as OrderRow[];
 }
 
-/** Met à jour le statut d'une commande (et l'horodatage associé). */
-export async function setOrderStatus(sb: SupabaseClient, id: string, status: 'payée' | 'expédiée' | 'livrée'): Promise<void> {
+/** Met à jour le statut d'une commande (horodatage + n° de suivi optionnel, dans un seul write). */
+export async function setOrderStatus(sb: SupabaseClient, id: string, status: 'payée' | 'expédiée' | 'livrée', trackingNumber?: string | null): Promise<void> {
   const patch: Record<string, any> = { status };
   if (status === 'expédiée') patch.shipped_at = new Date().toISOString();
   if (status === 'livrée') patch.delivered_at = new Date().toISOString();
+  if (trackingNumber !== undefined) patch.tracking_number = trackingNumber || null;
   const { error } = await sb.from('orders').update(patch).eq('id', id);
   if (error) throw new Error(error.message);
 }

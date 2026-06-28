@@ -439,3 +439,33 @@ a:hover { color: var(--accent-2); }
 .admin-thumbs figure { margin: 0; text-align: center; }
 .admin-thumbs img { width: 80px; height: 100px; object-fit: cover; border: 1px solid var(--line); }
 .hidden { display: none !important; }
+
+/* ═══ Plan 6 — admin dashboard & onglets ═══ */
+.admin-tabs { display: flex; flex-wrap: wrap; gap: 0.4rem; border-bottom: 1px solid var(--line); margin: 1rem 0 1.5rem; }
+.admin-tab {
+  background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer;
+  font-family: var(--font-display); font-size: 1.05rem; color: var(--text-soft);
+  padding: 0.6rem 1rem; transition: color .2s, border-color .2s;
+}
+.admin-tab:hover { color: var(--accent); }
+.admin-tab.active { color: var(--accent); border-bottom-color: var(--gold-deep); }
+.admin-tab .badge-count {
+  display: inline-block; min-width: 1.3rem; padding: 0 0.35rem; margin-left: 0.35rem;
+  background: var(--sage-deep); color: var(--cream); border-radius: 999px; font-size: 0.8rem; font-family: var(--font-body);
+}
+.admin-panel { display: none; }
+.admin-panel.active { display: block; }
+
+.stat-cards { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); margin-bottom: 2rem; }
+.stat-card {
+  background: var(--cream); border: 1px solid var(--line); border-top: 3px solid var(--sage); border-radius: 4px;
+  padding: 1.2rem 1.3rem;
+}
+.stat-card .stat-label { font-size: 0.85rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-soft); }
+.stat-card .stat-value { font-family: var(--font-display); font-size: 2rem; color: var(--accent); line-height: 1.1; margin-top: 0.3rem; }
+.stat-card .stat-sub { font-size: 0.9rem; color: var(--text-soft); margin-top: 0.2rem; }
+.stat-card--todo { border-top-color: var(--burgundy); }
+.dash-section { margin-bottom: 2rem; }
+.dash-section h3 { color: var(--accent); }
+.cat-breakdown { list-style: none; padding: 0; margin: 0.5rem 0; }
+.cat-breakdown li { display: flex; justify-content: space-between; padding: 0.35rem 0; border-bottom: 1px solid var(--line); font-size: 0.98rem; }

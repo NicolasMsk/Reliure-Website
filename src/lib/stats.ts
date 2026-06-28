@@ -2,7 +2,7 @@ import { SupabaseClient } from '@supabase/supabase-js';
 
 export interface StatsData {
   products: Array<{ id: string; category: string | null; status: string }>;
-  orders: Array<{ id: string; amount: number; status: string; created_at: string; customer_email: string | null; product_id: string | null }>;
+  orders: Array<{ id: string; amount: number; status: string; created_at: string; customer_email: string | null; product_id?: string | null }>;
   customRequests: Array<{ id: string; status: string }>;
   messages: Array<{ id: string; status: string }>;
 }
@@ -24,7 +24,7 @@ export interface StatsResult {
 
 /** Calcule les agrégats du tableau de bord (pur, testable). `now` injectable. */
 export function computeStats(data: StatsData, now: Date = new Date()): StatsResult {
-  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const monthStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
   const inMonth = (iso: string) => new Date(iso) >= monthStart;
 
   const orders = data.orders ?? [];
@@ -62,14 +62,16 @@ export function computeStats(data: StatsData, now: Date = new Date()): StatsResu
 export async function getStats(sb: SupabaseClient): Promise<StatsResult> {
   const [products, orders, customRequests, messages] = await Promise.all([
     sb.from('products').select('id, category, status'),
-    sb.from('orders').select('id, amount, status, created_at, customer_email, product_id'),
+    sb.from('orders').select('id, amount, status, created_at, customer_email'),
     sb.from('custom_requests').select('id, status'),
     sb.from('contact_messages').select('id, status'),
   ]);
+  const firstError = products.error || orders.error || customRequests.error || messages.error;
+  if (firstError) throw new Error(firstError.message);
   return computeStats({
-    products: (products.data ?? []) as any,
-    orders: (orders.data ?? []) as any,
-    customRequests: (customRequests.data ?? []) as any,
-    messages: (messages.data ?? []) as any,
+    products: (products.data ?? []) as StatsData['products'],
+    orders: (orders.data ?? []) as StatsData['orders'],
+    customRequests: (customRequests.data ?? []) as StatsData['customRequests'],
+    messages: (messages.data ?? []) as StatsData['messages'],
   });
 }

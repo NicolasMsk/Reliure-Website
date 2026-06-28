@@ -120,5 +120,17 @@
   "custom.images": "Photos de référence (jusqu'à 3, optionnel)",
   "custom.send": "Envoyer ma demande",
   "custom.success": "Demande envoyée, merci ! Je vous réponds au plus vite.",
-  "custom.error": "Une erreur est survenue. Réessayez ou écrivez-moi directement."
+  "custom.error": "Une erreur est survenue. Réessayez ou écrivez-moi directement.",
+  "account.profile.title": "Mes informations",
+  "account.phone": "Téléphone",
+  "account.address1": "Adresse",
+  "account.address2": "Complément d'adresse",
+  "account.postal": "Code postal",
+  "account.city": "Ville",
+  "account.country": "Pays",
+  "account.save": "Enregistrer",
+  "account.saved": "Informations enregistrées.",
+  "account.terms": "J'accepte les CGV et la politique de confidentialité",
+  "account.order.tracking": "Suivi",
+  "custom.phone": "Téléphone (optionnel)"
 }

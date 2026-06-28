@@ -51,6 +51,7 @@
         const f = new FormData(e.target);
         const { error } = await window.AUTH.signUp(f.get('email'), f.get('password'), f.get('name'));
         if (error) { note($('auth-note'), 'account.error', false); return; }
+        try { await fetch('/api/consent', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: f.get('email'), consent_type: 'cgv' }) }); } catch {}
         note($('auth-note'), 'account.signup.check', true);
       } catch {
         note($('auth-note'), 'account.error', false);
@@ -99,6 +100,20 @@
     const token = await window.AUTH.getToken();
     const me = await fetch('/api/account/me', { headers: { Authorization: `Bearer ${token}` } }).then((r) => r.ok ? r.json() : null).catch(() => null);
     if (me) { $('acct-name').textContent = me.name || ''; $('acct-email').textContent = me.email || ''; }
+    const f = document.getElementById('profile-form');
+    if (f && me) { ['name','phone','address_line1','address_line2','postal_code','city','country'].forEach((k) => { if (f[k]) f[k].value = me[k] || ''; }); }
+    if (f && !f.dataset.wired) {
+      f.dataset.wired = '1';
+      f.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const note = document.getElementById('profile-note');
+        const tk = await window.AUTH.getToken();
+        const body = Object.fromEntries(new FormData(f).entries());
+        const res = await fetch('/api/account/me', { method: 'PATCH', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${tk}` }, body: JSON.stringify(body) });
+        note.textContent = window.I18N.t(res.ok ? 'account.saved' : 'account.error');
+        note.className = 'form-note ' + (res.ok ? 'is-success' : 'is-error'); note.hidden = false;
+      });
+    }
     const orders = await fetch('/api/account/orders', { headers: { Authorization: `Bearer ${token}` } }).then((r) => r.ok ? r.json() : []).catch(() => []);
     const list = $('orders-list'); const empty = $('orders-empty');
     if (!orders.length) { empty.classList.remove('hidden'); list.innerHTML = ''; return; }
@@ -108,12 +123,13 @@
 
   function orderRow(o) {
     const date = (o.created_at || '').slice(0, 10);
+    const track = o.tracking_number ? `<span style="color:var(--sage-deep)"> · ${window.I18N.t('account.order.tracking')}: ${window.escHtml(o.tracking_number)}</span>` : '';
     return `<div class="service-card" style="margin-bottom:.8rem">
     <div style="display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap">
       <span>${window.escHtml(date)}</span>
       <strong>${Number(o.amount).toFixed(2)} €</strong>
       <span style="color:var(--sage-deep)">${window.escHtml(o.status)}</span>
-    </div>
+    </div>${track}
   </div>`;
   }
 })();

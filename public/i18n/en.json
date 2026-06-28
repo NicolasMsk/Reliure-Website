@@ -120,5 +120,17 @@
   "custom.images": "Reference photos (up to 3, optional)",
   "custom.send": "Send my request",
   "custom.success": "Request sent, thank you! I'll reply as soon as possible.",
-  "custom.error": "Something went wrong. Please try again or email me directly."
+  "custom.error": "Something went wrong. Please try again or email me directly.",
+  "account.profile.title": "My information",
+  "account.phone": "Phone",
+  "account.address1": "Address",
+  "account.address2": "Address line 2",
+  "account.postal": "Postal code",
+  "account.city": "City",
+  "account.country": "Country",
+  "account.save": "Save",
+  "account.saved": "Information saved.",
+  "account.terms": "I accept the terms and privacy policy",
+  "account.order.tracking": "Tracking",
+  "custom.phone": "Phone (optional)"
 }

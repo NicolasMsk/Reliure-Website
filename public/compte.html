@@ -32,6 +32,11 @@
             <label class="field"><span data-i18n="account.name"></span><input type="text" name="name" required /></label>
             <label class="field"><span data-i18n="account.email"></span><input type="email" name="email" required /></label>
             <label class="field"><span data-i18n="account.password"></span><input type="password" name="password" minlength="6" required /></label>
+            <label class="field"><span data-i18n="account.phone"></span><input type="tel" name="phone" /></label>
+            <label class="field" style="flex-direction:row;display:flex;gap:0.5rem;align-items:flex-start">
+              <input type="checkbox" name="terms" required style="width:auto;margin-top:0.35rem" />
+              <span data-i18n="account.terms"></span>
+            </label>
             <button class="btn" type="submit" data-i18n="account.signup.btn"></button>
           </form>
 
@@ -52,6 +57,20 @@
         <div id="account-view" class="hidden">
           <p><strong id="acct-name"></strong><br><span id="acct-email" style="color:var(--text-soft)"></span></p>
           <button class="btn btn--sm btn--ghost" id="logout-btn" data-i18n="account.logout"></button>
+
+          <h2 style="margin-top:1.5rem" data-i18n="account.profile.title"></h2>
+          <form id="profile-form">
+            <label class="field"><span data-i18n="account.name"></span><input name="name" /></label>
+            <label class="field"><span data-i18n="account.phone"></span><input name="phone" type="tel" /></label>
+            <label class="field"><span data-i18n="account.address1"></span><input name="address_line1" /></label>
+            <label class="field"><span data-i18n="account.address2"></span><input name="address_line2" /></label>
+            <label class="field"><span data-i18n="account.postal"></span><input name="postal_code" /></label>
+            <label class="field"><span data-i18n="account.city"></span><input name="city" /></label>
+            <label class="field"><span data-i18n="account.country"></span><input name="country" /></label>
+            <button class="btn" type="submit" data-i18n="account.save"></button>
+            <p class="form-note hidden" id="profile-note"></p>
+          </form>
+
           <h2 style="margin-top:2rem" data-i18n="account.orders.title"></h2>
           <div class="rule"></div>
           <div id="orders-list"></div>

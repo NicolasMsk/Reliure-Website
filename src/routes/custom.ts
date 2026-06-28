@@ -48,6 +48,7 @@ export function registerCustomRoutes(app: Express): void {
     const email = typeof b.email === 'string' ? b.email.trim().slice(0, 200) : '';
     const description = typeof b.description === 'string' ? b.description.trim().slice(0, 5000) : '';
     const budget = typeof b.budget === 'string' ? b.budget.trim().slice(0, 100) : '';
+    const phone = typeof b.phone === 'string' ? b.phone.trim().slice(0, 40) : '';
     const lang = b.lang === 'en' ? 'en' : 'fr';
 
     if (!name || !description) { res.status(400).json({ error: 'Champs obligatoires manquants.' }); return; }
@@ -61,7 +62,7 @@ export function registerCustomRoutes(app: Express): void {
     try {
       const sb = getSupabase();
       // 1. Créer la demande (sans images) pour obtenir l'id
-      const created = await createCustomRequest(sb, { name, email, description, budget, reference_images: [], lang });
+      const created = await createCustomRequest(sb, { name, email, description, budget, phone, reference_images: [], lang });
       // 2. Uploader les photos, rattacher les chemins
       const paths: string[] = [];
       for (let i = 0; i < files.length; i++) {

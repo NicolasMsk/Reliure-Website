@@ -6,6 +6,7 @@ export type CustomStatus = (typeof VALID_STATUSES)[number];
 export interface CustomRequestInput {
   name: string; email: string; description: string;
   budget?: string | null; reference_images?: string[]; lang: 'fr' | 'en';
+  phone?: string | null;
 }
 
 export interface CustomRequestRow {
@@ -19,6 +20,7 @@ export async function createCustomRequest(sb: SupabaseClient, input: CustomReque
   const { data, error } = await sb.from('custom_requests').insert({
     name: input.name, email: input.email, description: input.description,
     budget: input.budget ?? null, reference_images: input.reference_images ?? [],
+    phone: input.phone ?? null,
     status: 'nouvelle', lang: input.lang,
   }).select().single();
   if (error) throw new Error(error.message);

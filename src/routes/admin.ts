@@ -6,6 +6,8 @@ import { getSupabase } from '../lib/clients';
 import { slugify } from '../lib/slug';
 import { isAllowedImage, uploadProductImage, deleteStorageObject, publicUrl } from '../lib/storage';
 import { listOrders, setOrderStatus } from '../lib/orders';
+import { getStats } from '../lib/stats';
+import { listContactMessages, setMessageStatus, MESSAGE_STATUSES } from '../lib/contact-messages';
 import { listCustomRequests, getCustomRequest, setCustomRequestStatus, attachPaymentLink, VALID_STATUSES } from '../lib/custom-requests';
 import { signedReferenceUrl } from '../lib/storage';
 import { paymentsConfigured, createPaymentLink } from '../lib/payments';
@@ -165,14 +167,39 @@ export function registerAdminRoutes(app: Express): void {
     } catch (err: any) { res.status(500).json({ error: err.message }); }
   });
 
-  // Commandes — mise à jour du statut
+  // Commandes — mise à jour du statut (+ n° de suivi optionnel)
   app.patch('/api/admin/orders/:id/status', requireAdmin, async (req: Request, res: Response): Promise<void> => {
     const status = (req.body as any)?.status;
+    const tracking = typeof (req.body as any)?.tracking_number === 'string' ? (req.body as any).tracking_number.trim().slice(0, 100) : undefined;
     if (!['payée', 'expédiée', 'livrée'].includes(status)) { res.status(400).json({ error: 'Statut invalide.' }); return; }
     try {
       await setOrderStatus(getSupabase(), req.params.id, status);
+      if (tracking !== undefined) {
+        const { error } = await getSupabase().from('orders').update({ tracking_number: tracking || null }).eq('id', req.params.id);
+        if (error) { res.status(500).json({ error: error.message }); return; }
+      }
       res.json({ success: true });
     } catch (err: any) { res.status(500).json({ error: err.message }); }
+  });
+
+  // Tableau de bord — statistiques agrégées
+  app.get('/api/admin/stats', requireAdmin, async (_req: Request, res: Response): Promise<void> => {
+    try { res.json(await getStats(getSupabase())); }
+    catch (err: any) { res.status(500).json({ error: err.message }); }
+  });
+
+  // Messages de contact — liste
+  app.get('/api/admin/messages', requireAdmin, async (_req: Request, res: Response): Promise<void> => {
+    try { res.json(await listContactMessages(getSupabase())); }
+    catch (err: any) { res.status(500).json({ error: err.message }); }
+  });
+
+  // Messages de contact — mise à jour du statut
+  app.patch('/api/admin/messages/:id/status', requireAdmin, async (req: Request, res: Response): Promise<void> => {
+    const status = (req.body as any)?.status;
+    if (!MESSAGE_STATUSES.includes(status)) { res.status(400).json({ error: 'Statut invalide.' }); return; }
+    try { await setMessageStatus(getSupabase(), req.params.id, status); res.json({ success: true }); }
+    catch (err: any) { res.status(500).json({ error: err.message }); }
   });
 
   // Demandes sur-mesure — liste

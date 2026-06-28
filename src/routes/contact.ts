@@ -1,5 +1,6 @@
 import { Express, Request, Response } from 'express';
-import { getResend } from '../lib/clients';
+import { getResend, getSupabase } from '../lib/clients';
+import { createContactMessage } from '../lib/contact-messages';
 import { EMAIL_FROM, CONTACT_TO } from '../config';
 
 interface ContactBody {
@@ -36,6 +37,14 @@ export function registerContactRoutes(app: Express): void {
 
     // Empêche l'injection d'en-têtes via le nom dans le sujet (CR/LF).
     const safeName = name.replace(/[\r\n]+/g, ' ').trim();
+    const lang = ((req.body as any)?.lang === 'en' ? 'en' : 'fr') as 'fr' | 'en';
+
+    // Persister d'abord (rien n'est perdu même si l'email échoue)
+    try {
+      await createContactMessage(getSupabase(), { name, email, message, lang });
+    } catch (e: any) {
+      console.error('⚠️  Persistance message contact:', e.message);
+    }
 
     try {
       const { error } = await getResend().emails.send({

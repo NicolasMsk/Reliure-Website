@@ -14,6 +14,7 @@ import { registerStripeWebhook } from './routes/stripe-webhook';
 import { registerConfigRoute } from './routes/config';
 import { registerAccountRoutes } from './routes/account';
 import { registerCustomRoutes } from './routes/custom';
+import { registerConsentRoute } from './routes/consent';
 
 const PUBLIC_DIR = path.join(__dirname, '..', 'public');
 
@@ -72,6 +73,7 @@ export function createApp(): Express {
   registerConfigRoute(app);
   registerAccountRoutes(app);
   registerCustomRoutes(app);
+  registerConsentRoute(app);
 
   // Assets avec cache — UNIQUEMENT en production. En dev, pas de cache long
   // (sinon le navigateur sert d'anciens JS/CSS après une modification).

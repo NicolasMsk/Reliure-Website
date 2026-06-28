@@ -22,32 +22,67 @@
           </form>
         </div>
 
-        <!-- Tableau de bord -->
+        <!-- Espace de pilotage -->
         <div id="admin-view" class="hidden">
           <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap">
-            <h1 style="margin:0">Mes créations</h1>
-            <div class="admin-actions">
-              <button class="btn btn--sm" id="new-btn">+ Nouvelle création</button>
-              <button class="btn btn--sm btn--ghost" id="logout-btn">Déconnexion</button>
-            </div>
+            <h1 style="margin:0">Administration</h1>
+            <button class="btn btn--sm btn--ghost" id="logout-btn">Déconnexion</button>
           </div>
-          <table class="admin-table">
-            <thead><tr><th>Titre (FR)</th><th>Catégorie</th><th>Prix</th><th>Statut</th><th>Actions</th></tr></thead>
-            <tbody id="products-tbody"></tbody>
-          </table>
 
-          <h2 style="margin-top:2.5rem">Commandes</h2>
-          <table class="admin-table">
-            <thead><tr><th>Date</th><th>Email client</th><th>Montant</th><th>Adresse</th><th>Statut</th><th>Actions</th></tr></thead>
-            <tbody id="orders-tbody"></tbody>
-          </table>
+          <nav class="admin-tabs">
+            <button class="admin-tab active" data-tab="dashboard">Tableau de bord</button>
+            <button class="admin-tab" data-tab="products">Produits</button>
+            <button class="admin-tab" data-tab="orders">Commandes</button>
+            <button class="admin-tab" data-tab="custom">Sur-mesure</button>
+            <button class="admin-tab" data-tab="messages">Messages <span class="badge-count hidden" id="msg-badge">0</span></button>
+          </nav>
 
-          <h2 style="margin-top:2.5rem">Demandes sur-mesure</h2>
-          <table class="admin-table">
-            <thead><tr><th>Date</th><th>Nom / Email</th><th>Budget</th><th>Statut</th><th>Actions</th></tr></thead>
-            <tbody id="custom-tbody"></tbody>
-          </table>
-          <div id="custom-detail" class="hidden" style="margin-top:1rem"></div>
+          <!-- Tableau de bord -->
+          <section class="admin-panel active" data-panel="dashboard">
+            <div class="stat-cards" id="stat-cards"></div>
+            <div class="dash-section">
+              <h3>Répartition du catalogue</h3>
+              <ul class="cat-breakdown" id="cat-breakdown"></ul>
+            </div>
+            <div class="dash-section">
+              <h3>Dernières ventes</h3>
+              <table class="admin-table"><tbody id="recent-sales"></tbody></table>
+            </div>
+          </section>
+
+          <!-- Produits -->
+          <section class="admin-panel" data-panel="products">
+            <button class="btn btn--sm" id="new-btn">+ Nouvelle création</button>
+            <table class="admin-table">
+              <thead><tr><th>Titre (FR)</th><th>Catégorie</th><th>Prix</th><th>Statut</th><th>Actions</th></tr></thead>
+              <tbody id="products-tbody"></tbody>
+            </table>
+          </section>
+
+          <!-- Commandes -->
+          <section class="admin-panel" data-panel="orders">
+            <table class="admin-table">
+              <thead><tr><th>Date</th><th>Email client</th><th>Montant</th><th>Adresse</th><th>Suivi</th><th>Statut</th><th>Actions</th></tr></thead>
+              <tbody id="orders-tbody"></tbody>
+            </table>
+          </section>
+
+          <!-- Sur-mesure -->
+          <section class="admin-panel" data-panel="custom">
+            <table class="admin-table">
+              <thead><tr><th>Date</th><th>Nom / Email</th><th>Budget</th><th>Statut</th><th>Actions</th></tr></thead>
+              <tbody id="custom-tbody"></tbody>
+            </table>
+            <div id="custom-detail" class="hidden" style="margin-top:1rem"></div>
+          </section>
+
+          <!-- Messages -->
+          <section class="admin-panel" data-panel="messages">
+            <table class="admin-table">
+              <thead><tr><th>Date</th><th>Nom / Email</th><th>Message</th><th>Statut</th><th>Actions</th></tr></thead>
+              <tbody id="messages-tbody"></tbody>
+            </table>
+          </section>
         </div>
 
         <!-- Éditeur (création/édition) -->

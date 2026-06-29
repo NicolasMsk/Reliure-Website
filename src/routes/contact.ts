@@ -29,40 +29,41 @@ export function registerContactRoutes(app: Express): void {
       res.status(400).json({ error: 'Adresse email invalide.' });
       return;
     }
-    if (!CONTACT_TO) {
-      console.error('❌  CONTACT_TO non configuré.');
-      res.status(500).json({ error: 'Configuration serveur incomplète.' });
-      return;
-    }
-
     // Empêche l'injection d'en-têtes via le nom dans le sujet (CR/LF).
     const safeName = name.replace(/[\r\n]+/g, ' ').trim();
     const lang = ((req.body as any)?.lang === 'en' ? 'en' : 'fr') as 'fr' | 'en';
 
-    // Persister d'abord (rien n'est perdu même si l'email échoue)
+    // 1) Persister d'abord — rien n'est perdu même si l'email échoue.
+    let persisted = false;
     try {
       await createContactMessage(getSupabase(), { name, email, message, lang });
+      persisted = true;
     } catch (e: any) {
       console.error('⚠️  Persistance message contact:', e.message);
     }
 
-    try {
-      const { error } = await getResend().emails.send({
-        from: EMAIL_FROM,
-        to: CONTACT_TO,
-        replyTo: email,
-        subject: `📩 Nouveau message — ${safeName}`,
-        html: `<p><strong>De :</strong> ${esc(name)} (${esc(email)})</p><p>${esc(message).replace(/\n/g, '<br>')}</p>`,
-      });
-      if (error) {
-        console.error('⚠️  Resend a renvoyé une erreur :', error);
-        res.status(502).json({ error: 'Envoi impossible. Réessayez plus tard.' });
-        return;
+    // 2) Email best-effort (si configuré).
+    let emailed = false;
+    if (CONTACT_TO) {
+      try {
+        const { error } = await getResend().emails.send({
+          from: EMAIL_FROM,
+          to: CONTACT_TO,
+          replyTo: email,
+          subject: `📩 Nouveau message — ${safeName}`,
+          html: `<p><strong>De :</strong> ${esc(name)} (${esc(email)})</p><p>${esc(message).replace(/\n/g, '<br>')}</p>`,
+        });
+        if (error) console.error('⚠️  Resend a renvoyé une erreur :', error);
+        else emailed = true;
+      } catch (err: any) {
+        console.error('⚠️  Échec envoi contact :', err.message);
       }
-      res.json({ success: true });
-    } catch (err: any) {
-      console.error('⚠️  Échec envoi contact :', err.message);
-      res.status(502).json({ error: 'Envoi impossible. Réessayez plus tard.' });
+    } else {
+      console.error('❌  CONTACT_TO non configuré.');
     }
+
+    // Succès dès lors que le message est enregistré OU envoyé.
+    if (persisted || emailed) { res.json({ success: true }); return; }
+    res.status(502).json({ error: 'Envoi impossible. Réessayez plus tard.' });
   });
 }

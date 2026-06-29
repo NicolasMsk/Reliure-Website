@@ -79,7 +79,7 @@ export function registerCustomRoutes(app: Express): void {
           await getResend().emails.send({
             from: EMAIL_FROM, to: ORDER_NOTIFY_EMAIL,
             subject: `🎨 Nouvelle demande sur-mesure — ${esc(name)}`,
-            html: `<p><strong>${esc(name)}</strong> (${esc(email)})</p><p>Budget : ${esc(budget) || '—'}</p><p>${esc(description).replace(/\n/g, '<br>')}</p><p>${paths.length} photo(s) jointe(s).</p>`,
+            html: `<p><strong>${esc(name)}</strong> (${esc(email)})</p><p>Téléphone : ${esc(phone) || '—'}</p><p>Budget : ${esc(budget) || '—'}</p><p>${esc(description).replace(/\n/g, '<br>')}</p><p>${paths.length} photo(s) jointe(s).</p>`,
           });
         } catch (e: any) { console.error('email sur-mesure', e.message); }
       }

@@ -101,9 +101,12 @@ a:hover { color: var(--accent-2); }
 .container { max-width: var(--maxw); margin: 0 auto; padding-inline: var(--gutter); }
 .section { padding-block: clamp(3rem, 8vw, 6rem); }
 .section--alt {
-  background: var(--sage-bg);
+  background: var(--burgundy-deep);
   border-block: 1px solid var(--line-gold);
+  color: var(--cream);
 }
+.section--alt h2 { color: var(--cream); }
+.section--alt > .container > p { color: rgba(240, 234, 216, 0.88); }
 .center { text-align: center; }
 
 /* ── Filet ornemental : dorure & point de nerf ─────────────── */
@@ -128,7 +131,7 @@ a:hover { color: var(--accent-2); }
   font-size: 0.95rem;
   color: var(--accent);
 }
-.section--alt .rule::after { background: var(--sage-bg); }
+.section--alt .rule::after { background: var(--burgundy-deep); color: var(--gold); }
 
 /* ── Boutons : plaque de cuir frappée or ───────────────────── */
 .btn {

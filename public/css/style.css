@@ -12,13 +12,14 @@
   --burgundy-deep:  #420a19;
   --cream:          #f0ead8;
   --cream-soft:     #f7f3e8;
-  --sage:           #99aba6;
-  --sage-deep:      #6f827c;
-  --sage-bg:        #cfe1d6;
-  --fir:            #1f4a3b;
-  --fir-deep:       #15342a;
+  /* Verts chauds (forêt / sapin / sauge olivâtre) — aucun bleu */
+  --sage:           #93a07a;
+  --sage-deep:      #5e6f4f;
+  --sage-bg:        #e6e9d6;
+  --fir:            #2f5a43;
+  --fir-deep:       #1d3b2c;
   --gold:           #d6bd6e;
-  --gold-deep:      #b59c52;
+  --gold-deep:      #b08d3e;
   --olive:          #6b6a3a;
   --ink:            #2a1a1f;
 
@@ -58,7 +59,7 @@ body {
   /* Parchemin : grain à peine perceptible (deux halos très doux) */
   background:
     radial-gradient(120% 80% at 50% -10%, rgba(210, 191, 129, 0.10), transparent 60%),
-    radial-gradient(90% 60% at 100% 100%, rgba(153, 171, 166, 0.10), transparent 55%),
+    radial-gradient(90% 60% at 100% 100%, rgba(147, 160, 122, 0.12), transparent 55%),
     var(--bg);
   background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
@@ -223,7 +224,7 @@ a:hover { color: var(--accent-2); }
   position: relative; text-align: center;
   padding-block: clamp(4.5rem, 12vw, 9rem);
   background:
-    linear-gradient(rgba(21, 52, 42, 0.80), rgba(21, 52, 42, 0.86)),
+    linear-gradient(rgba(29, 59, 44, 0.82), rgba(29, 59, 44, 0.88)),
     var(--hero-image, none) center/cover no-repeat,
     var(--fir-deep);
   color: var(--cream);

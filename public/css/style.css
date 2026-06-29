@@ -14,8 +14,10 @@
   --cream-soft:     #f7f3e8;
   --sage:           #99aba6;
   --sage-deep:      #6f827c;
-  --sage-bg:        #dde8e0;
-  --gold:           #d2bf81;
+  --sage-bg:        #cfe1d6;
+  --fir:            #1f4a3b;
+  --fir-deep:       #15342a;
+  --gold:           #d6bd6e;
   --gold-deep:      #b59c52;
   --olive:          #6b6a3a;
   --ink:            #2a1a1f;
@@ -221,9 +223,9 @@ a:hover { color: var(--accent-2); }
   position: relative; text-align: center;
   padding-block: clamp(4.5rem, 12vw, 9rem);
   background:
-    linear-gradient(rgba(66, 10, 25, 0.58), rgba(66, 10, 25, 0.62)),
+    linear-gradient(rgba(21, 52, 42, 0.80), rgba(21, 52, 42, 0.86)),
     var(--hero-image, none) center/cover no-repeat,
-    var(--burgundy-deep);
+    var(--fir-deep);
   color: var(--cream);
   overflow: hidden;
 }
@@ -307,7 +309,7 @@ a:hover { color: var(--accent-2); }
 /* ── Pied de page : plat arrière du livre ──────────────────── */
 .site-footer {
   position: relative;
-  background: var(--burgundy-deep); color: var(--cream);
+  background: var(--fir-deep); color: var(--cream);
   padding-block: 2.7rem; text-align: center;
 }
 /* tranchefile dorée en pied aussi — symétrie reliée */
@@ -316,10 +318,10 @@ a:hover { color: var(--accent-2); }
   position: absolute; left: 0; right: 0; top: 0; height: 2px;
   background: repeating-linear-gradient(
     90deg,
-    var(--gold-deep) 0, var(--gold-deep) 4px,
-    var(--sage-deep) 4px, var(--sage-deep) 8px
+    var(--gold) 0, var(--gold) 4px,
+    var(--burgundy) 4px, var(--burgundy) 8px
   );
-  opacity: 0.7;
+  opacity: 0.85;
 }
 .site-footer p { color: rgba(240, 234, 216, 0.8); margin: 0.3rem 0; }
 .site-footer .brand {
@@ -353,8 +355,8 @@ a:hover { color: var(--accent-2); }
 .step .step-num {
   display: inline-flex; align-items: center; justify-content: center;
   width: 3rem; height: 3rem; margin-bottom: 0.8rem;
-  border: 1px solid var(--sage-deep); border-radius: 50%;
-  font-family: var(--font-display); font-size: 1.3rem; color: var(--sage-deep);
+  border: 2px solid var(--fir); border-radius: 50%;
+  font-family: var(--font-display); font-size: 1.3rem; color: var(--fir); font-weight: 600;
 }
 .step h3 { font-size: 1.2rem; }
 .step p { font-size: 1rem; }
@@ -362,17 +364,17 @@ a:hover { color: var(--accent-2); }
 /* Services : cartes */
 .services { display: grid; gap: 1.4rem; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin-top: 2rem; }
 .service-card {
-  background: var(--cream); border: 1px solid var(--line); border-top: 3px solid var(--sage); border-radius: 3px;
+  background: var(--cream); border: 1px solid var(--line); border-top: 4px solid var(--fir); border-radius: 3px;
   padding: 1.6rem 1.4rem; transition: transform .2s, box-shadow .2s, border-top-color .2s;
 }
-.service-card:hover { border-top-color: var(--sage-deep); }
+.service-card:hover { border-top-color: var(--burgundy); }
 .service-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(66,10,25,0.12); }
 .service-card h3 { font-size: 1.25rem; }
 
 /* Témoignages */
 .testimonials { display: grid; gap: 1.4rem; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); margin-top: 2rem; }
 .testimonial {
-  background: var(--bg); border-left: 3px solid var(--sage-deep);
+  background: var(--bg); border-left: 4px solid var(--fir);
   padding: 1.4rem 1.5rem; font-style: italic; color: var(--text-soft);
 }
 .testimonial .author { display: block; margin-top: 0.8rem; font-style: normal; color: var(--accent); font-family: var(--font-display); }

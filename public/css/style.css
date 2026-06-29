@@ -110,7 +110,7 @@ a:hover { color: var(--accent-2); }
 /* Contenu posé directement sur l'aplat bordeaux (ex. étapes sur-mesure) : texte clair */
 .section--alt .step h3 { color: var(--cream); }
 .section--alt .step p { color: rgba(240, 234, 216, 0.85); }
-.section--alt .step-num { border-color: var(--gold); color: var(--gold); }
+.section--alt .step .step-num { border-color: var(--gold); color: var(--gold); }
 .center { text-align: center; }
 
 /* ── Filet ornemental : dorure & point de nerf ─────────────── */

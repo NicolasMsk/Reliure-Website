@@ -75,14 +75,15 @@ export function createApp(): Express {
   registerCustomRoutes(app);
   registerConsentRoute(app);
 
-  // Assets avec cache — UNIQUEMENT en production. En dev, pas de cache long
-  // (sinon le navigateur sert d'anciens JS/CSS après une modification).
-  const cssJsMaxAge = IS_PRODUCTION ? '7d' : 0;
-  const i18nMaxAge = IS_PRODUCTION ? '1d' : 0;
-  const imgMaxAge = IS_PRODUCTION ? '30d' : 0;
-  app.use('/css', express.static(path.join(PUBLIC_DIR, 'css'), { maxAge: cssJsMaxAge }));
-  app.use('/js', express.static(path.join(PUBLIC_DIR, 'js'), { maxAge: cssJsMaxAge }));
-  app.use('/i18n', express.static(path.join(PUBLIC_DIR, 'i18n'), { maxAge: i18nMaxAge }));
+  // Cache des assets.
+  // CSS/JS/i18n : maxAge 0 → le navigateur REVALIDE à chaque chargement (via ETag).
+  //   Comme ces fichiers changent à chaque déploiement sans changer de nom,
+  //   cela garantit qu'aucune version périmée n'est servie (réponses 304 si inchangé).
+  // Images : cache court (1 j en prod) — elles changent rarement, et restent légères à revalider.
+  const imgMaxAge = IS_PRODUCTION ? '1d' : 0;
+  app.use('/css', express.static(path.join(PUBLIC_DIR, 'css'), { maxAge: 0 }));
+  app.use('/js', express.static(path.join(PUBLIC_DIR, 'js'), { maxAge: 0 }));
+  app.use('/i18n', express.static(path.join(PUBLIC_DIR, 'i18n'), { maxAge: 0 }));
   app.use('/images', express.static(path.join(PUBLIC_DIR, 'images'), { maxAge: imgMaxAge }));
 
   // HTML restant (sans cache)

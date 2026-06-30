@@ -133,5 +133,11 @@
   "account.saved": "Informations enregistrées.",
   "account.terms": "J'accepte les CGV et la politique de confidentialité",
   "account.order.tracking": "Suivi",
-  "custom.phone": "Téléphone (optionnel)"
+  "custom.phone": "Téléphone (optionnel)",
+  "product.details": "Détails",
+  "product.materials": "Matériaux",
+  "product.technique": "Technique & finitions",
+  "product.duration": "Temps de réalisation",
+  "product.dimensions": "Dimensions",
+  "product.weight": "Poids"
 }

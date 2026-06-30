@@ -3,7 +3,7 @@
    La langue est lue depuis ?lang=, puis localStorage, sinon 'fr'. */
 (function () {
   const SUPPORTED = ['fr', 'en'];
-  const DICT_VERSION = 6; // ↑ à incrémenter quand les dictionnaires changent (anti-cache)
+  const DICT_VERSION = 8; // ↑ à incrémenter quand les dictionnaires changent (anti-cache)
 
   function detectLang() {
     const param = new URLSearchParams(location.search).get('lang');

@@ -133,5 +133,11 @@
   "account.saved": "Information saved.",
   "account.terms": "I accept the terms and privacy policy",
   "account.order.tracking": "Tracking",
-  "custom.phone": "Phone (optional)"
+  "custom.phone": "Phone (optional)",
+  "product.details": "Details",
+  "product.materials": "Materials",
+  "product.technique": "Technique & finishing",
+  "product.duration": "Time to make",
+  "product.dimensions": "Dimensions",
+  "product.weight": "Weight"
 }

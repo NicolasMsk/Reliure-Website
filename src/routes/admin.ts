@@ -93,6 +93,10 @@ export function registerAdminRoutes(app: Express): void {
       category: b.category ?? null,
       status: ['brouillon', 'disponible', 'vendu'].includes(b.status) ? b.status : 'brouillon',
       weight_grams: Number(b.weight_grams) || 500,
+      materials:  typeof b.materials  === 'string' ? b.materials.trim().slice(0, 300)  : null,
+      duration:   typeof b.duration   === 'string' ? b.duration.trim().slice(0, 120)   : null,
+      dimensions: typeof b.dimensions === 'string' ? b.dimensions.trim().slice(0, 120) : null,
+      technique:  typeof b.technique  === 'string' ? b.technique.trim().slice(0, 300)  : null,
     };
     const { data, error } = await getSupabase().from('products').insert(row).select().single();
     if (error) { res.status(500).json({ error: error.message }); return; }
@@ -103,7 +107,7 @@ export function registerAdminRoutes(app: Express): void {
   app.patch('/api/admin/products/:id', requireAdmin, async (req: Request, res: Response): Promise<void> => {
     const b = req.body as any;
     const patch: Record<string, any> = {};
-    for (const k of ['title_fr', 'title_en', 'description_fr', 'description_en', 'category']) if (k in b) patch[k] = b[k];
+    for (const k of ['title_fr', 'title_en', 'description_fr', 'description_en', 'category', 'materials', 'duration', 'dimensions', 'technique']) if (k in b) patch[k] = b[k];
     if ('price' in b) patch.price = Number(b.price) || 0;
     if ('weight_grams' in b) patch.weight_grams = Number(b.weight_grams) || 500;
     if ('status' in b && ['brouillon', 'disponible', 'vendu'].includes(b.status)) patch.status = b.status;

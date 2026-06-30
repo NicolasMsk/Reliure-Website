@@ -5,7 +5,7 @@
   function headerHTML() {
     return `
       <div class="container">
-        <a href="/" class="brand" data-i18n="brand.name">Livre de Soie</a>
+        <a href="/" class="brand">Book of Silk<span class="brand-sub"></span></a>
         <nav class="nav" aria-label="Navigation principale">
           <a href="/" data-i18n="nav.home"></a>
           <a href="/boutique" data-i18n="nav.shop"></a>
@@ -26,7 +26,7 @@
     const year = new Date().getFullYear();
     return `
       <div class="container">
-        <p class="brand" data-i18n="brand.name">Livre de Soie</p>
+        <p class="brand">Book of Silk<span class="brand-sub"></span></p>
         <p data-i18n="footer.tagline"></p>
         <p>© ${year} — <span data-i18n="footer.rights"></span></p>
       </div>`;
@@ -43,6 +43,14 @@
         a.removeAttribute('aria-current');
       }
     });
+  }
+
+  /* Sous-titre de marque : nom localisé à côté de « Book of Silk »,
+     masqué quand il vaudrait déjà « Book of Silk » (anglais). */
+  function updateBrandSub() {
+    const name = (window.I18N && window.I18N.t) ? window.I18N.t('brand.name') : 'Livre de Soie';
+    const sub = (name && name !== 'Book of Silk') ? name : '';
+    document.querySelectorAll('.brand-sub').forEach((el) => { el.textContent = sub; });
   }
 
   function markActiveLang() {
@@ -75,5 +83,5 @@
     if (window.I18N) await window.I18N.init();
     markActiveLang();
   });
-  document.addEventListener('i18n:ready', markActiveLang);
+  document.addEventListener('i18n:ready', () => { markActiveLang(); updateBrandSub(); });
 })();

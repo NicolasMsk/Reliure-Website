@@ -196,6 +196,13 @@ a:hover { color: var(--accent-2); }
   letter-spacing: 0.18em; color: var(--accent); text-transform: uppercase;
   line-height: 1;
 }
+/* Nom localisé en petit, à côté de « Book of Silk » (masqué si vide, ex. en anglais) */
+.brand-sub {
+  font-size: 0.5em; font-style: italic; font-weight: 400;
+  text-transform: none; letter-spacing: 0.04em; opacity: 0.7;
+}
+.brand-sub:empty { display: none; }
+.brand-sub::before { content: '·'; margin: 0 0.35em; opacity: 0.55; }
 .nav { display: flex; align-items: center; gap: clamp(0.8rem, 2vw, 1.9rem); }
 .nav a {
   font-family: var(--font-display);

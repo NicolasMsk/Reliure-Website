@@ -13,6 +13,7 @@ interface Seed {
   title_fr: string; title_en: string;
   description_fr: string; description_en: string;
   price: number; category: string; weight_grams: number;
+  materials: string; duration: string; dimensions: string; technique: string;
   images: string[];
 }
 
@@ -31,6 +32,7 @@ const SEEDS: Seed[] = [
       "The text block was fully disbound and hand-sewn anew on linen tapes. The leather was cleaned, nourished and re-toned, the headcaps rebuilt and the spine bands revived. Page foxing was gently reduced.\n\n" +
       "Full-leather binding · gilding revived with gold leaf · hand-sewn headband. A unique piece carrying a family's story.",
     price: 380, category: 'bibles-restaurees', weight_grams: 950,
+    materials: 'Cuir pleine fleur, fil de lin, dorure à la feuille', duration: '~25 h sur 3 semaines', dimensions: '24 × 17 × 6 cm', technique: 'Démontage, couture main sur ruban, coiffes refaites, dorure ravivée',
     images: ['photo-1504052434569-70ad5836ab65', 'photo-1532012197267-da84d127e765', 'photo-1456513080510-7bf3a84b82f8'].map(img),
   },
   {
@@ -45,6 +47,7 @@ const SEEDS: Seed[] = [
       "Bound in full burgundy leather, this Bible features a hand-embroidered fleur-de-lys in silk thread highlighted with gold. The edges are gold-leafed, with a matching silk bookmark.\n\n" +
       "Full-grain leather · hand silk-and-gold embroidery · gilt edges · protective case included. Perfect for a wedding, christening or family heirloom.",
     price: 620, category: 'bibles-brodees', weight_grams: 900,
+    materials: 'Cuir bordeaux pleine fleur, fil de soie, or, tranches dorées', duration: '~40 h', dimensions: '22 × 15 × 5 cm', technique: 'Reliure plein cuir, broderie main soie & or, tranches dorées à la feuille',
     images: ['photo-1589998059171-988d887df646', 'photo-1543002588-bfa74002ed7e', 'photo-1481627834876-b7833e8f5570'].map(img),
   },
   {
@@ -59,6 +62,7 @@ const SEEDS: Seed[] = [
       "Raised-band spine, dark cold-tooled leather boards, patinated brass clasps. The work was consolidated page by page to last for decades to come.\n\n" +
       "Leather & brass · raised bands · cold tooling. A solid, understated devotional object.",
     price: 290, category: 'livres-religieux', weight_grams: 800,
+    materials: 'Cuir sombre, laiton, papier consolidé', duration: '~20 h', dimensions: '20 × 14 × 4 cm', technique: 'Dos à nerfs, estampage à froid, fermoirs laiton',
     images: ['photo-1457369804613-52c61a468e7d', 'photo-1474932430478-367dbb6832c1', 'photo-1495446815901-a7297e633e8d'].map(img),
   },
   {
@@ -73,6 +77,7 @@ const SEEDS: Seed[] = [
       "Hand-sewn tan leather, lined with burgundy velvet, discreet magnetic closure. Made to the exact dimensions of the entrusted work.\n\n" +
       "Leather & velvet · handmade · made to measure. To preserve and pass on safely.",
     price: 180, category: 'coffrets-sacres', weight_grams: 600,
+    materials: 'Cuir fauve, velours bordeaux', duration: '~12 h', dimensions: 'Sur-mesure (selon l\'ouvrage)', technique: 'Couture main, intérieur velours, fermeture aimantée',
     images: ['photo-1524578271613-d550eacf6090', 'photo-1521587760476-6c12a4b040da', 'photo-1512820790803-83ca734da794'].map(img),
   },
   {
@@ -87,6 +92,7 @@ const SEEDS: Seed[] = [
       "Exposed spine sewing, cream laid paper, silk bookmark and rounded corners. The leather develops a beautiful patina over time.\n\n" +
       "Full leather · laid paper · exposed sewing. Available in several shades on request.",
     price: 95, category: 'autres-reliures', weight_grams: 350,
+    materials: 'Cuir pleine peau, papier vergé crème, soie', duration: '~6 h', dimensions: '21 × 14 × 2 cm', technique: 'Couture apparente, coins arrondis, signet de soie',
     images: ['photo-1512820790803-83ca734da794', 'photo-1456513080510-7bf3a84b82f8', 'photo-1532012197267-da84d127e765'].map(img),
   },
   {
@@ -101,6 +107,7 @@ const SEEDS: Seed[] = [
       "Full black leather binding, large gold-tooled cross on the upper board, hand-sewn headband and gilt edges. The raised-band spine underlines the nobility of the work.\n\n" +
       "Black leather · gold tooling · gilt edges. A ceremonial piece.",
     price: 540, category: 'livres-religieux', weight_grams: 1000,
+    materials: 'Cuir noir, dorure à chaud, tranches dorées', duration: '~35 h', dimensions: '26 × 18 × 5 cm', technique: 'Reliure plein cuir, croix dorée à chaud, dos à nerfs, tranchefile main',
     images: ['photo-1543002588-bfa74002ed7e', 'photo-1589998059171-988d887df646', 'photo-1474932430478-367dbb6832c1'].map(img),
   },
 ];
@@ -119,6 +126,7 @@ async function main() {
       slug, title_fr: s.title_fr, title_en: s.title_en,
       description_fr: s.description_fr, description_en: s.description_en,
       price: s.price, category: s.category, status: 'disponible', weight_grams: s.weight_grams,
+      materials: s.materials, duration: s.duration, dimensions: s.dimensions, technique: s.technique,
     };
     const { data: prod, error } = await sb.from('products').upsert(row, { onConflict: 'slug' }).select().single();
     if (error) { console.error('upsert', slug, error.message); continue; }

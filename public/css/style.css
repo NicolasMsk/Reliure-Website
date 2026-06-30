@@ -494,3 +494,17 @@ a:hover { color: var(--accent-2); }
 .product-details dt { font-family: var(--font-display); color: var(--fir); font-weight: 600; }
 .product-details dd { margin: 0; color: var(--text-soft); }
 @media (max-width: 520px) { .product-details dl { grid-template-columns: 1fr; gap: 0.1rem 0; } .product-details dt { margin-top: 0.6rem; } }
+
+/* ═══ Plan 7 — sections accueil ═══ */
+.reasons, .materials-grid { display: grid; gap: 1.4rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-top: 2rem; }
+.reason h3, .matter h3 { font-size: 1.2rem; }
+/* « Pourquoi » est sur aplat bordeaux (.section--alt) → texte clair */
+.section--alt .reason h3 { color: var(--gold); }
+.section--alt .reason p { color: rgba(240, 234, 216, 0.88); }
+.matter h3 { color: var(--fir); }
+/* Bandeau manifeste : aplat vert sapin, citation crème */
+.manifesto { background: var(--fir-deep); }
+.manifesto-quote {
+  color: var(--cream); font-family: var(--font-display); font-style: italic;
+  font-size: clamp(1.4rem, 3vw, 2rem); max-width: 50ch; margin: 0 auto; line-height: 1.4;
+}

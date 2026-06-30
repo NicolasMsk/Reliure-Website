@@ -11,6 +11,10 @@ export interface ProductRow {
   category: string | null;
   status: 'brouillon' | 'disponible' | 'vendu';
   weight_grams: number;
+  materials: string | null;
+  duration: string | null;
+  dimensions: string | null;
+  technique: string | null;
   created_at: string;
   updated_at: string;
 }

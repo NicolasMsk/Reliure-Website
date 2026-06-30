@@ -5,7 +5,7 @@
   function headerHTML() {
     return `
       <div class="container">
-        <a href="/" class="brand">Reliure</a>
+        <a href="/" class="brand" data-i18n="brand.name">Livre de Soie</a>
         <nav class="nav" aria-label="Navigation principale">
           <a href="/" data-i18n="nav.home"></a>
           <a href="/boutique" data-i18n="nav.shop"></a>
@@ -26,7 +26,7 @@
     const year = new Date().getFullYear();
     return `
       <div class="container">
-        <p class="brand">Reliure</p>
+        <p class="brand" data-i18n="brand.name">Livre de Soie</p>
         <p data-i18n="footer.tagline"></p>
         <p>© ${year} — <span data-i18n="footer.rights"></span></p>
       </div>`;

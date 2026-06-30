@@ -3,6 +3,7 @@
    La langue est lue depuis ?lang=, puis localStorage, sinon 'fr'. */
 (function () {
   const SUPPORTED = ['fr', 'en'];
+  const DICT_VERSION = 6; // ↑ à incrémenter quand les dictionnaires changent (anti-cache)
 
   function detectLang() {
     const param = new URLSearchParams(location.search).get('lang');
@@ -14,7 +15,7 @@
 
   async function loadDict(lang) {
     try {
-      const res = await fetch(`/i18n/${lang}.json`);
+      const res = await fetch(`/i18n/${lang}.json?v=${DICT_VERSION}`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       return res.json();
     } catch (err) {

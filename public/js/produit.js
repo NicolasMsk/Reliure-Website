@@ -29,6 +29,20 @@ function render() {
 
 function view(p, lang) {
   const buyLabel = (window.I18N && window.I18N.t) ? window.I18N.t('product.buy') : (lang === 'en' ? 'Buy' : 'Acheter');
+  const t = (k) => (window.I18N && window.I18N.t) ? window.I18N.t(k) : k;
+  const weightTxt = p.weight_grams ? `${p.weight_grams} g` : '';
+  const detailRows = [
+    [t('product.materials'), p.materials],
+    [t('product.technique'), p.technique],
+    [t('product.duration'), p.duration],
+    [t('product.dimensions'), p.dimensions],
+    [t('product.weight'), weightTxt],
+  ].filter(([, v]) => v && String(v).trim());
+  const detailsHtml = detailRows.length ? `
+      <div class="product-details">
+        <h2>${escHtml(t('product.details'))}</h2>
+        <dl>${detailRows.map(([k, v]) => `<dt>${escHtml(k)}</dt><dd>${escHtml(v)}</dd>`).join('')}</dl>
+      </div>` : '';
   const title = lang === 'en' ? p.title_en : p.title_fr;
   const desc = (lang === 'en' ? p.description_en : p.description_fr) || '';
   const cat = window.categoryLabel ? window.categoryLabel(p.category, lang) : p.category;
@@ -45,6 +59,7 @@ function view(p, lang) {
       <h1>${escHtml(title)}</h1>
       <p class="price">${Number(p.price).toFixed(2)} €</p>
       <div>${escHtml(desc).replace(/\n/g, '<br>')}</div>
+      ${detailsHtml}
       <p style="margin-top:1.5rem">
         <button class="btn" id="buy-btn" data-slug="${escAttr(p.slug)}">${escHtml(buyLabel)}</button>
         <span id="buy-note" class="form-note" hidden></span>

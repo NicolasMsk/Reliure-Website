@@ -486,3 +486,11 @@ a:hover { color: var(--accent-2); }
 .dash-section h3 { color: var(--accent); }
 .cat-breakdown { list-style: none; padding: 0; margin: 0.5rem 0; }
 .cat-breakdown li { display: flex; justify-content: space-between; padding: 0.35rem 0; border-bottom: 1px solid var(--line); font-size: 0.98rem; }
+
+/* ═══ Plan 7 — bloc Détails produit ═══ */
+.product-details { margin-top: 1.8rem; padding-top: 1.4rem; border-top: 1px solid var(--line); }
+.product-details h2 { font-size: 1.3rem; margin-bottom: 0.6rem; }
+.product-details dl { display: grid; grid-template-columns: max-content 1fr; gap: 0.4rem 1.2rem; margin: 0; }
+.product-details dt { font-family: var(--font-display); color: var(--fir); font-weight: 600; }
+.product-details dd { margin: 0; color: var(--text-soft); }
+@media (max-width: 520px) { .product-details dl { grid-template-columns: 1fr; gap: 0.1rem 0; } .product-details dt { margin-top: 0.6rem; } }

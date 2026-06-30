@@ -153,7 +153,7 @@ async function openEditor(id) {
     $('editor-title').textContent = 'Modifier la création';
     const rows = await fetch('/api/admin/products').then((r) => r.json());
     const p = rows.find((x) => x.id === id);
-    if (p) { for (const k of ['title_fr','title_en','description_fr','description_en','price','category','weight_grams','status']) if (f[k]) f[k].value = p[k] ?? ''; }
+    if (p) { for (const k of ['title_fr','title_en','description_fr','description_en','price','category','weight_grams','status','materials','technique','duration','dimensions']) if (f[k]) f[k].value = p[k] ?? ''; }
     f.id.value = id;
     $('images-block').classList.remove('hidden');
     loadImages(id);
@@ -168,7 +168,7 @@ async function onSave(e) {
   e.preventDefault();
   const f = e.target;
   const body = {};
-  for (const k of ['title_fr','title_en','description_fr','description_en','price','category','weight_grams','status']) body[k] = f[k].value;
+  for (const k of ['title_fr','title_en','description_fr','description_en','price','category','weight_grams','status','materials','technique','duration','dimensions']) body[k] = f[k].value;
   const url = EDIT_ID ? `/api/admin/products/${EDIT_ID}` : '/api/admin/products';
   const method = EDIT_ID ? 'PATCH' : 'POST';
   const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });

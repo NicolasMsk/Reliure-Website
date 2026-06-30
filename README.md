@@ -39,6 +39,10 @@ Exécuter `migrations/2026-06-28-data-enrichment.sql` dans Supabase → SQL Edit
 Ajoute : coordonnées client (téléphone/adresse), n° de suivi commande, téléphone sur-mesure,
 table `contact_messages` (messages persistés) et `consents` (journal RGPD).
 
+## Migration détails produits (2026-07-01)
+Exécuter `migrations/2026-07-01-product-details.sql` dans Supabase → SQL Editor.
+Ajoute aux produits : `materials`, `duration`, `dimensions`, `technique` (bloc « Détails » des fiches).
+
 ## Déploiement Railway
 
 1. Connecter le dépôt à Railway.

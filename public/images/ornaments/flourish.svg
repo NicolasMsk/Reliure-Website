@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 40" width="340" height="40">
+  <!-- Filet à volutes d'acanthe symétriques, fleuron central. Or ancien. -->
+  <g fill="none" stroke="#b08d3e" stroke-width="1.4" stroke-linecap="round">
+    <g id="half">
+      <path d="M170 20 C 196 20 202 10 222 10 C 240 10 246 21 258 20 C 272 19 278 12 292 15"/>
+      <path d="M292 15 C 301 17 305 24 300 29 C 296 33 289 31 289 26 C 289 22.5 294 21.5 296 24.5"/>
+      <path d="M212 19 C 216 14 222 13 227 15"/>
+      <path d="M244 21 C 249 25 255 25 259 22"/>
+    </g>
+    <use href="#half" transform="matrix(-1,0,0,1,340,0)"/>
+  </g>
+  <!-- fleuron central -->
+  <g fill="#b08d3e">
+    <path d="M170 6 C 166 13 166 21 170 28 C 174 21 174 13 170 6 Z"/>
+    <circle cx="170" cy="30" r="2.6"/>
+    <circle cx="159" cy="20" r="1.7"/>
+    <circle cx="181" cy="20" r="1.7"/>
+  </g>
+</svg>

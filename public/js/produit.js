@@ -58,7 +58,7 @@ function view(p, lang) {
       <p class="cat">${escHtml(cat)}</p>
       <h1>${escHtml(title)}</h1>
       <p class="price">${Number(p.price).toFixed(2)} €</p>
-      <div>${escHtml(desc).replace(/\n/g, '<br>')}</div>
+      <div class="dropcap">${escHtml(desc).replace(/\n/g, '<br>')}</div>
       ${detailsHtml}
       <p style="margin-top:1.5rem">
         <button class="btn" id="buy-btn" data-slug="${escAttr(p.slug)}">${escHtml(buyLabel)}</button>

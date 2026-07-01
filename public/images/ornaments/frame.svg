@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="300" height="300">
+  <!-- Cadre à écoinçons pour border-image (slice 100). Coins ornés, arêtes = filet d'or.
+       Les tranches d'arête (milieux) sont étirées → un simple filet doré. -->
+  <g fill="none" stroke="#b08d3e" stroke-width="1.6" stroke-linecap="round">
+    <!-- arêtes (centrées dans chaque tranche, étirées par border-image) -->
+    <line x1="100" y1="15" x2="200" y2="15"/>
+    <line x1="100" y1="285" x2="200" y2="285"/>
+    <line x1="15" y1="100" x2="15" y2="200"/>
+    <line x1="285" y1="100" x2="285" y2="200"/>
+    <!-- écoinçon (haut-gauche), dupliqué/miroité sur les 4 coins -->
+    <g id="corner">
+      <path d="M15 72 L15 32 Q15 15 32 15 L72 15"/>
+      <path d="M32 32 C 45 32 50 42 42 49 C 37 53 29 50 31 43"/>
+      <path d="M15 50 C 24 47 30 40 30 31"/>
+      <path d="M50 15 C 47 24 40 30 31 30"/>
+    </g>
+    <use href="#corner" transform="matrix(-1,0,0,1,300,0)"/>
+    <use href="#corner" transform="matrix(1,0,0,-1,0,300)"/>
+    <use href="#corner" transform="matrix(-1,0,0,-1,300,300)"/>
+  </g>
+</svg>

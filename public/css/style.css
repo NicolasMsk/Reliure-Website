@@ -56,12 +56,13 @@ body {
   font-size: 1.125rem;
   line-height: 1.72;
   color: var(--text);
-  /* Parchemin : grain à peine perceptible (deux halos très doux) */
+  /* Parchemin : grain fin (fibres) + deux halos très doux */
   background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E") repeat,
     radial-gradient(120% 80% at 50% -10%, rgba(210, 191, 129, 0.10), transparent 60%),
     radial-gradient(90% 60% at 100% 100%, rgba(147, 160, 122, 0.12), transparent 55%),
     var(--bg);
-  background-attachment: fixed;
+  background-attachment: scroll, fixed, fixed, fixed;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -116,26 +117,10 @@ a:hover { color: var(--accent-2); }
 /* ── Filet ornemental : dorure & point de nerf ─────────────── */
 /* Hairline d'or qui s'estompe, frappée d'un fleuron central. */
 .rule {
-  width: 132px; height: 1px; margin: 1.6rem auto;
-  background: linear-gradient(90deg, transparent, var(--gold-deep) 35%, var(--gold-deep) 65%, transparent);
-  position: relative;
+  width: 300px; max-width: 80%; height: 26px; margin: 1.5rem auto 1.7rem;
+  background: url('/images/ornaments/flourish.svg') center / contain no-repeat;
 }
-.rule::before,
-.rule::after {
-  position: absolute; top: 50%; transform: translate(-50%, -50%);
-  color: var(--gold-deep);
-  font-size: 0.72rem; line-height: 1;
-}
-/* Fleuron central, gravé sur le fond — point de dorure */
-.rule::after {
-  content: '❧';
-  left: 50%;
-  background: var(--bg);
-  padding: 0 0.65rem;
-  font-size: 0.95rem;
-  color: var(--accent);
-}
-.section--alt .rule::after { background: var(--burgundy-deep); color: var(--gold); }
+.rule::before, .rule::after { content: none; }
 
 /* ── Boutons : plaque de cuir frappée or ───────────────────── */
 .btn {
@@ -249,11 +234,12 @@ a:hover { color: var(--accent-2); }
   color: var(--cream);
   overflow: hidden;
 }
-/* double encadrement doré « à froid » — un filet d'estampage sur le plat */
+/* double encadrement doré « à froid » — écoinçons ornés + filet intérieur */
 .hero::before {
   content: '';
   position: absolute; inset: clamp(0.9rem, 3vw, 2rem);
-  border: 1px solid var(--line-gold);
+  border: 20px solid transparent;
+  border-image: url('/images/ornaments/frame.svg') 100 / 20px round;
   pointer-events: none;
 }
 .hero::after {
@@ -512,4 +498,57 @@ a:hover { color: var(--accent-2); }
 .manifesto-quote {
   color: var(--cream); font-family: var(--font-display); font-style: italic;
   font-size: clamp(1.4rem, 3vw, 2rem); max-width: 50ch; margin: 0 auto; line-height: 1.4;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Plan 8 — Couche ornementale (brocart, écoinçons, broderie, lettrine)
+   Motifs : /images/ornaments/{damask,flourish,frame}.svg — or ancien.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Brocart fleur-de-lys tone-on-tone sur les aplats sombres ── */
+.section--alt, .cta-band, .manifesto { position: relative; overflow: hidden; }
+.section--alt > .container,
+.cta-band > .container,
+.manifesto > .container { position: relative; z-index: 1; }
+.section--alt::before,
+.cta-band::before,
+.manifesto::before {
+  content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: url('/images/ornaments/damask.svg') center top / 150px auto repeat;
+  opacity: 0.10;
+}
+
+/* ── Cadre à écoinçons : manifeste (panneau enluminé) ── */
+.manifesto .manifesto-quote {
+  border: 26px solid transparent;
+  border-image: url('/images/ornaments/frame.svg') 100 / 26px round;
+  padding: clamp(1.2rem, 3.5vw, 2.2rem) clamp(1.4rem, 6vw, 3rem);
+}
+
+/* ── Cadre à écoinçons : photo produit principale ── */
+.gallery .gallery-main img {
+  border: 13px solid transparent;
+  border-image: url('/images/ornaments/frame.svg') 100 / 13px round;
+}
+
+/* ── Point de broderie : liseré cousu sur les cartes de prestations ── */
+.service-card { position: relative; }
+.service-card::before {
+  content: ''; position: absolute; inset: 7px; pointer-events: none;
+  border: 1px dashed var(--line-gold); border-radius: 2px;
+  opacity: 0.55; transition: opacity .25s ease;
+}
+.service-card:hover::before { opacity: 1; }
+
+/* ── Lettrine enluminée (illuminated initial) ── */
+.dropcap::first-letter {
+  float: left;
+  font-family: var(--font-display); font-weight: 700;
+  font-size: 3.5em; line-height: 0.66;
+  padding: 0.06em 0.12em 0 0;
+  color: var(--accent);
+}
+
+@media (max-width: 720px) {
+  .manifesto .manifesto-quote { border-width: 18px; border-image-width: 18px; }
 }

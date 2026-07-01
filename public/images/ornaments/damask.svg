@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 180" width="140" height="180">
+  <!-- Brocart tone-on-tone : treillis en losange + fleur-de-lys centrale.
+       Conçu pour se répéter sans couture (nœuds sur les milieux d'arêtes). -->
+  <g fill="none" stroke="#d6bd6e" stroke-width="1">
+    <path d="M70 0 L140 90 L70 180 L0 90 Z"/>
+    <path d="M70 34 C 92 56 92 56 70 78 C 48 56 48 56 70 34 Z" opacity="0.6"/>
+    <path d="M70 102 C 92 124 92 124 70 146 C 48 124 48 124 70 102 Z" opacity="0.6"/>
+  </g>
+  <g fill="#d6bd6e">
+    <!-- fleur-de-lys -->
+    <path d="M70 66 C 66 76 66 86 70 96 C 74 86 74 76 70 66 Z"/>
+    <path d="M70 92 C 61 84 50 86 50 95 C 50 103 61 103 70 97 Z"/>
+    <path d="M70 92 C 79 84 90 86 90 95 C 90 103 79 103 70 97 Z"/>
+    <rect x="59" y="97.5" width="22" height="3.5" rx="1.75"/>
+    <path d="M70 101 C 67 107 67 112 70 117 C 73 112 73 107 70 101 Z"/>
+  </g>
+  <!-- nœuds d'arête (complétés par les tuiles voisines) -->
+  <g fill="#d6bd6e">
+    <circle cx="70" cy="0" r="3"/>
+    <circle cx="70" cy="180" r="3"/>
+    <circle cx="0" cy="90" r="3"/>
+    <circle cx="140" cy="90" r="3"/>
+  </g>
+</svg>

@@ -5,11 +5,18 @@ import { listProducts } from '../lib/products';
 /** Pages statiques indexables (URLs propres). */
 const STATIC_PATHS = ['/', '/boutique', '/sur-mesure', '/a-propos', '/contact', '/faq'];
 
-/** Base absolue : APP_URL si défini, sinon déduite de la requête. */
+/** Base absolue pour robots/sitemap : on privilégie l'hôte RÉEL de la requête
+   (toujours le bon domaine, y compris après ajout d'un domaine personnalisé).
+   On ne retombe sur APP_URL que s'il est renseigné ET n'est pas une valeur de
+   dev (localhost), pour éviter de publier des URLs localhost dans le sitemap. */
 function base(req: Request): string {
+  const host = req.get('host');
+  if (host && !/^localhost|127\.0\.0\.1/.test(host)) {
+    return `${req.protocol}://${host}`;
+  }
   const env = (process.env.APP_URL || '').replace(/\/+$/, '');
-  if (env) return env;
-  return `${req.protocol}://${req.get('host')}`;
+  if (env && !/localhost|127\.0\.0\.1/.test(env)) return env;
+  return `${req.protocol}://${host || 'localhost:3000'}`;
 }
 
 export function registerSeoRoutes(app: Express): void {

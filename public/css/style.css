@@ -406,13 +406,15 @@ a:hover { color: var(--accent-2); }
   h1 { font-size: clamp(2.1rem, 9vw, 3rem); }
   .product { gap: 1.6rem; }
   .admin-table { display: block; overflow-x: auto; white-space: nowrap; }
+  /* Bandeau CTA : boutons centrés, largeur maîtrisée et identique */
+  .cta-band .btn { display: block; width: fit-content; min-width: 62%; max-width: 100%; margin: 0.6rem auto; }
 }
 
 @media (max-width: 480px) {
   .brand { font-size: 1.32rem; letter-spacing: 0.14em; }
   .brand-sub { display: none; }
   .btn { padding: 0.62em 1.5em; }
-  .cta-band .btn { display: block; margin: 0.5rem auto; max-width: 320px; }
+  .cta-band .btn { min-width: 78%; }
 }
 
 /* ═══ Plan 2 — composants de contenu ═══ */

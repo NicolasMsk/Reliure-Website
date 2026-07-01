@@ -225,6 +225,26 @@ a:hover { color: var(--accent-2); }
 .lang-toggle button:focus-visible { outline: 2px solid var(--gold-deep); outline-offset: 2px; }
 .lang-toggle button.active { color: var(--accent); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--gold-deep); }
 
+/* ── Bouton menu (hamburger) — masqué au-dessus de 860px ── */
+.nav-toggle {
+  display: none;
+  width: 44px; height: 40px; padding: 0; flex-shrink: 0;
+  background: none; border: 1px solid var(--line-gold); border-radius: 3px;
+  color: var(--accent); cursor: pointer;
+  align-items: center; justify-content: center;
+}
+.nav-toggle:focus-visible { outline: 2px solid var(--gold-deep); outline-offset: 2px; }
+.nav-toggle .bar, .nav-toggle .bar::before, .nav-toggle .bar::after {
+  content: ''; position: absolute; width: 22px; height: 2px; border-radius: 2px;
+  background: currentColor; transition: transform .25s ease, opacity .2s ease;
+}
+.nav-toggle .bar { position: relative; }
+.nav-toggle .bar::before { top: -7px; }
+.nav-toggle .bar::after  { top: 7px; }
+.site-header.nav-open .nav-toggle .bar { background: transparent; }
+.site-header.nav-open .nav-toggle .bar::before { transform: translateY(7px) rotate(45deg); }
+.site-header.nav-open .nav-toggle .bar::after  { transform: translateY(-7px) rotate(-45deg); }
+
 /* ── Hero : plat de reliure bordeaux, encadrement à froid ──── */
 .hero {
   position: relative; text-align: center;
@@ -349,12 +369,47 @@ a:hover { color: var(--accent-2); }
 }
 
 /* ── Responsive ────────────────────────────────────────────── */
+
+/* Menu déroulant (tiroir) sous 860px */
+@media (max-width: 860px) {
+  .nav-toggle { display: inline-flex; }
+  .site-header .container { flex-wrap: nowrap; position: relative; }
+  .nav {
+    position: absolute; top: calc(100% + 1px); left: 0; right: 0;
+    flex-direction: column; align-items: stretch; gap: 0;
+    background: var(--cream-soft);
+    border-top: 1px solid var(--line-gold);
+    border-bottom: 1px solid var(--line-gold);
+    box-shadow: var(--shadow-soft);
+    padding: 0 var(--gutter);
+    max-height: 0; overflow: hidden; opacity: 0; pointer-events: none;
+    transition: max-height .32s ease, opacity .2s ease, padding .2s ease;
+  }
+  .site-header.nav-open .nav {
+    max-height: 82vh; overflow-y: auto; opacity: 1; pointer-events: auto;
+    padding: 0.4rem var(--gutter) 1rem;
+  }
+  .nav a { font-size: 1.16rem; padding: 0.72rem 0.1rem; border-bottom: 1px solid var(--line); }
+  .nav a::after { display: none; }
+  .lang-toggle { margin: 0.8rem 0 0; justify-content: center; }
+}
+
 @media (max-width: 720px) {
   body { font-size: 1.06rem; }
-  .site-header .container { flex-wrap: wrap; row-gap: 0.6rem; }
-  .nav { gap: 0.7rem; flex-wrap: wrap; justify-content: flex-end; }
-  .nav a { font-size: 0.96rem; }
-  .hero::before, .hero::after { inset: 0.75rem; }
+  .section { padding-block: clamp(2.4rem, 9vw, 3.8rem); }
+  .hero { padding-block: clamp(3.2rem, 14vw, 5rem); }
+  .hero::before { inset: 0.7rem; border-width: 13px; border-image-width: 13px; }
+  .hero::after { inset: calc(0.7rem + 5px); }
+  h1 { font-size: clamp(2.1rem, 9vw, 3rem); }
+  .product { gap: 1.6rem; }
+  .admin-table { display: block; overflow-x: auto; white-space: nowrap; }
+}
+
+@media (max-width: 480px) {
+  .brand { font-size: 1.32rem; letter-spacing: 0.14em; }
+  .brand-sub { display: none; }
+  .btn { padding: 0.62em 1.5em; }
+  .cta-band .btn { display: block; margin: 0.5rem auto; max-width: 320px; }
 }
 
 /* ═══ Plan 2 — composants de contenu ═══ */

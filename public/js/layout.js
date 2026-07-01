@@ -6,7 +6,8 @@
     return `
       <div class="container">
         <a href="/" class="brand">Book of Silk<span class="brand-sub"></span></a>
-        <nav class="nav" aria-label="Navigation principale">
+        <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="primary-nav"><span class="bar"></span></button>
+        <nav class="nav" id="primary-nav" aria-label="Navigation principale">
           <a href="/" data-i18n="nav.home"></a>
           <a href="/boutique" data-i18n="nav.shop"></a>
           <a href="/sur-mesure" data-i18n="nav.custom"></a>
@@ -62,6 +63,30 @@
     });
   }
 
+  /* Menu mobile : ouvre/ferme le tiroir, gère aria-expanded, se referme
+     au clic sur un lien ou quand on repasse en affichage bureau. */
+  function setupNavToggle() {
+    const header = document.getElementById('site-header');
+    if (!header) return;
+    const toggle = header.querySelector('.nav-toggle');
+    const nav = header.querySelector('.nav');
+    if (!toggle || !nav) return;
+
+    const close = () => { header.classList.remove('nav-open'); toggle.setAttribute('aria-expanded', 'false'); };
+
+    toggle.addEventListener('click', () => {
+      const open = header.classList.toggle('nav-open');
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    nav.querySelectorAll('a').forEach((a) => a.addEventListener('click', close));
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 860 && header.classList.contains('nav-open')) close();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && header.classList.contains('nav-open')) { close(); toggle.focus(); }
+    });
+  }
+
   function mount() {
     const h = document.getElementById('site-header');
     const f = document.getElementById('site-footer');
@@ -69,6 +94,7 @@
     if (f) f.innerHTML = footerHTML();
 
     markActivePage();
+    setupNavToggle();
 
     document.querySelectorAll('.lang-toggle button').forEach((b) => {
       b.addEventListener('click', async () => {

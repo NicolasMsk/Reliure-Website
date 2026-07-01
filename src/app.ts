@@ -15,6 +15,7 @@ import { registerConfigRoute } from './routes/config';
 import { registerAccountRoutes } from './routes/account';
 import { registerCustomRoutes } from './routes/custom';
 import { registerConsentRoute } from './routes/consent';
+import { registerSeoRoutes } from './routes/seo';
 
 const PUBLIC_DIR = path.join(__dirname, '..', 'public');
 
@@ -74,6 +75,7 @@ export function createApp(): Express {
   registerAccountRoutes(app);
   registerCustomRoutes(app);
   registerConsentRoute(app);
+  registerSeoRoutes(app);
 
   // Cache des assets.
   // CSS/JS/i18n : maxAge 0 → le navigateur REVALIDE à chaque chargement (via ETag).

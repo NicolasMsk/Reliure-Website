@@ -25,6 +25,55 @@ function render() {
   root.innerHTML = view(PRODUCT, lang);
   wireGallery();
   wireBuy(PRODUCT);
+  updateSeo(PRODUCT, lang);
+}
+
+/* Met à jour titre, meta description, Open Graph, canonique et données
+   structurées Product (schema.org) à partir du produit chargé. Améliore
+   le référencement de chaque fiche (titre générique côté HTML sinon). */
+function setMeta(attr, key, content) {
+  let el = document.head.querySelector(`meta[${attr}="${key}"]`);
+  if (!el) { el = document.createElement('meta'); el.setAttribute(attr, key); document.head.appendChild(el); }
+  el.setAttribute('content', content);
+}
+function updateSeo(p, lang) {
+  if (!p || typeof p !== 'object') return;
+  const title = (lang === 'en' ? p.title_en : p.title_fr) || p.title_fr || 'Création';
+  const descRaw = (lang === 'en' ? p.description_en : p.description_fr) || '';
+  const desc = descRaw.replace(/\s+/g, ' ').trim().slice(0, 155) || `${title} — reliure d'art faite main, Book of Silk.`;
+  const url = location.origin + location.pathname;
+  const imgs = (p.images && p.images.length) ? p.images.map((im) => im.url) : [location.origin + '/images/hero.png'];
+
+  document.title = `${title} — Book of Silk`;
+  setMeta('name', 'description', desc);
+  setMeta('property', 'og:title', `${title} — Book of Silk`);
+  setMeta('property', 'og:description', desc);
+  setMeta('property', 'og:url', url);
+  setMeta('property', 'og:image', imgs[0]);
+
+  let link = document.head.querySelector('link[rel="canonical"]');
+  if (!link) { link = document.createElement('link'); link.rel = 'canonical'; document.head.appendChild(link); }
+  link.href = url;
+
+  const jsonld = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: title,
+    image: imgs,
+    description: desc,
+    brand: { '@type': 'Brand', name: 'Book of Silk' },
+    offers: {
+      '@type': 'Offer',
+      price: Number(p.price).toFixed(2),
+      priceCurrency: 'EUR',
+      availability: p.status === 'disponible' ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+      url: url,
+    },
+  };
+  if (p.category) jsonld.category = p.category;
+  let s = document.getElementById('product-jsonld');
+  if (!s) { s = document.createElement('script'); s.type = 'application/ld+json'; s.id = 'product-jsonld'; document.head.appendChild(s); }
+  s.textContent = JSON.stringify(jsonld);
 }
 
 function view(p, lang) {

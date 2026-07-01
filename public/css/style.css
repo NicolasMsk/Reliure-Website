@@ -227,23 +227,26 @@ a:hover { color: var(--accent-2); }
 
 /* ── Bouton menu (hamburger) — masqué au-dessus de 860px ── */
 .nav-toggle {
-  display: none;
+  display: none; position: relative;
   width: 44px; height: 40px; padding: 0; flex-shrink: 0;
   background: none; border: 1px solid var(--line-gold); border-radius: 3px;
   color: var(--accent); cursor: pointer;
-  align-items: center; justify-content: center;
 }
 .nav-toggle:focus-visible { outline: 2px solid var(--gold-deep); outline-offset: 2px; }
-.nav-toggle .bar, .nav-toggle .bar::before, .nav-toggle .bar::after {
-  content: ''; position: absolute; width: 22px; height: 2px; border-radius: 2px;
+/* Trois barres identiques, centrées sur le même axe */
+.nav-toggle .bar,
+.nav-toggle .bar::before,
+.nav-toggle .bar::after {
+  content: ''; position: absolute;
+  left: 50%; margin-left: -11px; width: 22px; height: 2px; border-radius: 2px;
   background: currentColor; transition: transform .25s ease, opacity .2s ease;
 }
-.nav-toggle .bar { position: relative; }
+.nav-toggle .bar { top: 50%; margin-top: -1px; }
 .nav-toggle .bar::before { top: -7px; }
 .nav-toggle .bar::after  { top: 7px; }
 .site-header.nav-open .nav-toggle .bar { background: transparent; }
-.site-header.nav-open .nav-toggle .bar::before { transform: translateY(7px) rotate(45deg); }
-.site-header.nav-open .nav-toggle .bar::after  { transform: translateY(-7px) rotate(-45deg); }
+.site-header.nav-open .nav-toggle .bar::before { top: 0; transform: rotate(45deg); }
+.site-header.nav-open .nav-toggle .bar::after  { top: 0; transform: rotate(-45deg); }
 
 /* ── Hero : plat de reliure bordeaux, encadrement à froid ──── */
 .hero {

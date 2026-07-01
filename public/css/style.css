@@ -65,6 +65,8 @@ body {
   background-attachment: scroll, fixed, fixed, fixed;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  /* chiffres elzéviriens + ligatures : rendu « livre ancien » */
+  font-feature-settings: 'onum' 1, 'liga' 1, 'kern' 1;
 }
 
 /* ── Titres : capitales finement espacées, ligatures ──────── */
@@ -130,23 +132,23 @@ a:hover { color: var(--accent-2); }
   padding: 0.68em 1.9em;
   border: 1px solid var(--accent);
   border-radius: 2px;
-  background: var(--accent);
+  background: linear-gradient(180deg, #6d142b 0%, var(--accent) 55%, var(--burgundy-deep) 100%);
   color: var(--cream);
   cursor: pointer;
   position: relative;
   transition: background .25s ease, color .25s ease, transform .1s ease, box-shadow .25s ease;
 }
-/* liseré or intérieur — filet de dorure */
+/* liseré or intérieur — filet de dorure (permanent, discret) */
 .btn::after {
   content: '';
   position: absolute; inset: 3px;
-  border: 1px solid transparent;
+  border: 1px solid rgba(214, 189, 110, 0.28);
   border-radius: 1px;
   transition: border-color .25s ease;
   pointer-events: none;
 }
 .btn:hover { background: transparent; color: var(--accent); box-shadow: var(--shadow-soft); }
-.btn:hover::after { border-color: var(--line-gold); }
+.btn:hover::after { border-color: var(--gold-deep); }
 .btn:active { transform: translateY(1px); }
 .btn:focus-visible { outline: 2px solid var(--gold-deep); outline-offset: 3px; }
 .btn--ghost { background: transparent; color: var(--accent); }
@@ -257,7 +259,9 @@ a:hover { color: var(--accent-2); }
 }
 .hero .btn {
   margin-top: 1.6rem;
-  border-color: var(--gold); background: var(--gold); color: var(--burgundy-deep);
+  border-color: var(--gold-deep);
+  background: linear-gradient(180deg, #e7d494 0%, var(--gold) 48%, var(--gold-deep) 100%);
+  color: var(--burgundy-deep);
 }
 .hero .btn:hover { background: transparent; color: var(--cream); border-color: var(--cream); }
 .hero .btn:hover::after { border-color: rgba(240, 234, 216, 0.45); }
@@ -380,9 +384,19 @@ a:hover { color: var(--accent-2); }
 /* Témoignages */
 .testimonials { display: grid; gap: 1.4rem; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); margin-top: 2rem; }
 .testimonial {
-  background: var(--bg); border-left: 4px solid var(--fir);
-  padding: 1.4rem 1.5rem; font-style: italic; color: var(--text-soft);
+  position: relative;
+  background: var(--cream); border: 1px solid var(--line-gold); border-left: 3px solid var(--gold-deep);
+  border-radius: 2px;
+  padding: 2.2rem 1.6rem 1.5rem; font-style: italic; color: var(--text-soft);
 }
+/* grande guillemet gravée en filigrane */
+.testimonial::before {
+  content: '\201C';
+  position: absolute; top: 0.35rem; left: 0.7rem;
+  font-family: var(--font-display); font-size: 3.4rem; line-height: 1;
+  color: var(--gold); opacity: 0.5;
+}
+.testimonial > span { position: relative; z-index: 1; }
 .testimonial .author { display: block; margin-top: 0.8rem; font-style: normal; color: var(--accent); font-family: var(--font-display); }
 
 /* Bandeau d'appel */
@@ -420,10 +434,10 @@ a:hover { color: var(--accent-2); }
 .filter-btn.active { background: var(--accent); color: var(--cream); border-color: var(--accent); }
 .badge {
   display: inline-block; font-size: 0.78rem; letter-spacing: 0.04em; padding: 0.15rem 0.6rem;
-  border-radius: 2px; background: var(--gold); color: var(--burgundy-deep); font-family: var(--font-display);
+  border-radius: 2px; background: linear-gradient(180deg, #e7d494, var(--gold)); color: var(--burgundy-deep); font-family: var(--font-display);
 }
 .badge--sold { background: var(--sage-deep); color: var(--cream); }
-.card .price { font-family: var(--font-display); color: var(--accent); font-size: 1.15rem; margin-top: 0.4rem; }
+.card .price { font-family: var(--font-display); color: var(--accent); font-size: 1.15rem; margin-top: 0.4rem; font-feature-settings: 'onum' 1; }
 
 /* Fiche produit */
 .product { display: grid; gap: 2.5rem; grid-template-columns: 1fr; align-items: start; }
@@ -432,7 +446,7 @@ a:hover { color: var(--accent-2); }
 .gallery .thumbs { display: flex; gap: 0.6rem; margin-top: 0.6rem; flex-wrap: wrap; }
 .gallery .thumbs img { width: 72px; height: 90px; object-fit: cover; border: 1px solid var(--line); cursor: pointer; opacity: 0.7; }
 .gallery .thumbs img.active { opacity: 1; border-color: var(--gold-deep); }
-.product-info .price { font-family: var(--font-display); font-size: 1.6rem; color: var(--accent); }
+.product-info .price { font-family: var(--font-display); font-size: 1.6rem; color: var(--accent); font-feature-settings: 'onum' 1; }
 .product-info .cat { color: var(--sage-deep); font-style: italic; }
 
 /* Admin (utilitaire, sobre) */
@@ -540,14 +554,43 @@ a:hover { color: var(--accent-2); }
 }
 .service-card:hover::before { opacity: 1; }
 
-/* ── Lettrine enluminée (illuminated initial) ── */
+/* ── Lettrine enluminée : initiale gilée (feuille d'or) ── */
 .dropcap::first-letter {
   float: left;
   font-family: var(--font-display); font-weight: 700;
-  font-size: 3.5em; line-height: 0.66;
-  padding: 0.06em 0.12em 0 0;
-  color: var(--accent);
+  font-size: 3.9em; line-height: 0.62;
+  margin: 0.04em 0.14em 0 0;
+  color: var(--gold-deep);
+  background: linear-gradient(152deg, #e3cd86 0%, #b08d3e 52%, #7c6026 100%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
+
+/* ── Fleuron gravé au-dessus des titres de section (chapitre enluminé) ── */
+.section > .container.center > h2,
+.section.center > .container > h2,
+.hero h1 { position: relative; }
+.section > .container.center > h2::before,
+.section.center > .container > h2::before,
+.hero h1::before {
+  content: ''; display: block;
+  width: 56px; height: 26px; margin: 0 auto 0.7rem;
+  background: url('/images/ornaments/fleuron.svg') center / contain no-repeat;
+}
+/* sur aplats sombres, l'or est éclairci pour rester lisible */
+.section--alt > .container.center > h2::before,
+.hero h1::before { filter: brightness(1.4) saturate(0.9); }
+
+/* ── Pied de page : fleuron d'apparat au-dessus de la marque ── */
+.site-footer .container::before {
+  content: ''; display: block;
+  width: 240px; max-width: 60%; height: 22px; margin: 0 auto 1.1rem;
+  background: url('/images/ornaments/flourish.svg') center / contain no-repeat;
+  filter: brightness(1.15);
+}
+
+/* ── Cartes : filet d'or intérieur qui se révèle au survol ── */
+.card:hover { box-shadow: var(--shadow-lift), inset 0 0 0 1px var(--line-gold); }
 
 @media (max-width: 720px) {
   .manifesto .manifesto-quote { border-width: 18px; border-image-width: 18px; }

@@ -12,12 +12,12 @@
   --burgundy-deep:  #420a19;
   --cream:          #f0ead8;
   --cream-soft:     #f7f3e8;
-  /* Verts chauds (forêt / sapin / sauge olivâtre) — aucun bleu */
-  --sage:           #93a07a;
-  --sage-deep:      #5e6f4f;
-  --sage-bg:        #e6e9d6;
-  --fir:            #2f5a43;
-  --fir-deep:       #1d3b2c;
+  /* Anciens verts remplacés par des tons chauds (or/bois/vin) — aucun vert, aucun bleu */
+  --sage:           #c9b787;
+  --sage-deep:      #8a7440;
+  --sage-bg:        #efe9d8;
+  --fir:            #7a2140;
+  --fir-deep:       #2c0a16;
   --gold:           #d6bd6e;
   --gold-deep:      #b08d3e;
   --olive:          #6b6a3a;
@@ -253,9 +253,9 @@ a:hover { color: var(--accent-2); }
   position: relative; text-align: center;
   padding-block: clamp(4.5rem, 12vw, 9rem);
   background:
-    linear-gradient(rgba(29, 59, 44, 0.82), rgba(29, 59, 44, 0.88)),
+    linear-gradient(rgba(34, 16, 23, 0.22), rgba(34, 16, 23, 0.40)),
     var(--hero-image, none) center/cover no-repeat,
-    var(--fir-deep);
+    var(--burgundy-deep);
   color: var(--cream);
   overflow: hidden;
 }
@@ -274,11 +274,12 @@ a:hover { color: var(--accent-2); }
   pointer-events: none;
 }
 .hero .container { position: relative; z-index: 1; }
-.hero h1 { color: var(--cream); }
+.hero h1 { color: var(--cream); text-shadow: 0 2px 16px rgba(0, 0, 0, 0.5); }
 .hero p {
-  color: var(--cream); opacity: 0.94;
+  color: var(--cream); opacity: 0.96;
   font-size: clamp(1.15rem, 2.4vw, 1.35rem); font-style: italic;
   max-width: 42ch; margin-inline: auto;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.5);
 }
 .hero .btn {
   margin-top: 1.6rem;
